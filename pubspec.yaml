@@ -24,8 +24,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   http: ^0.12.0+4
-  shared_preferences: any
-  image_picker: any
+  shared_preferences: ^0.5.6+3
+  image_picker: ^0.6.4
   dio: any
   modal_progress_hud: ^0.1.3
 
