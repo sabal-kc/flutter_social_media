@@ -132,3 +132,24 @@ SizedBox submitButton(String title, Color color, Function onClick) {
         child: Text(title, style: TextStyle(fontSize: 16, color: Colors.white)),
       ));
 }
+
+TextFormField bioField(String title, TextEditingController controller) {
+  return TextFormField(
+    controller: controller,
+    keyboardType: TextInputType.multiline,
+    minLines: 3,
+    maxLines: null,
+    validator: (value) {
+      if (value.isEmpty) {
+        return 'Please enter some text';
+      }
+      return null;
+    },
+    decoration: InputDecoration(
+      labelText: title,
+      hintText: 'Enter ' + title,
+      filled: true,
+      fillColor: Colors.white60,
+    ),
+  );
+}

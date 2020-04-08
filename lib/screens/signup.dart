@@ -7,6 +7,8 @@ import 'package:social_media/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:social_media/data/user.dart';
+import 'package:social_media/screens/create_edit_profile.dart';
 
 import 'form.dart';
 import 'home.dart';
@@ -146,32 +148,42 @@ class _SignupPageState extends State<SignupPage> {
       'name': name,
       'email': email,
       'password': password,
-      "displayImage": await MultipartFile.fromFile(tmpFile.path),
+      "displayImage":
+          tmpFile == null ? "" : await MultipartFile.fromFile(tmpFile.path),
     });
 
-    String url = Constants.BASE_URL + "users/";
+    String registerUrl = Constants.BASE_URL + "users/";
     var dio = Dio();
     dio.options.connectTimeout = 10000;
     dio.options.receiveTimeout = 5000;
 
     //If successful post
     try {
-      Response<Map> response = await dio.post(url, data: formData);
+      Response<Map> response = await dio.post(registerUrl, data: formData);
       Map responseBody = response.data;
+      print(responseBody);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String token = responseBody['token'];
-      print(token);
       setState(() {
-        prefs.setString("token", token);
+        prefs.setString("token", responseBody['token']);
+        // prefs.setString("userID", responseBody["id"]);
       });
       setState(() {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
+
+      //Get self user id for future requests.
+      dio.options.headers['content-Type'] = 'application/json';
+      dio.options.headers["x-auth-token"] = responseBody["token"];
+      String getSelfUrl = Constants.BASE_URL + "auth/";
+      response = await dio.get(getSelfUrl);
+      print(response.data);
+      User user = User.fromJson(response.data);
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => CreateEditProfile(user, null)),
       );
     }
     //If any error is returned
@@ -199,30 +211,5 @@ class _SignupPageState extends State<SignupPage> {
       final snackBar = SnackBar(content: Text(errors["errors"][0]["msg"]));
       globalKey.currentState.showSnackBar(snackBar);
     }
-
-    // Map data = {
-    //   'name': name,
-    //   'email': email,
-    //   'password': password,
-    //   'displayImage': base64Image == null ? '' : base64Image
-    // };
-    // Map<String, String> headers = {
-    //   // 'Content-type': 'multipart/form-data',
-    //   "Content-Type": "application/x-www-form-urlencoded",
-    //   'Accept': 'application/json',
-    // };
-    // var response = await http.post(url,
-    //     headers: headers,
-    //     body: "body" + '=' + Uri.encodeQueryComponent(json.encode(data)));
-    // print(response.body);
-    // if (response.statusCode == 200) {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   var jsonData = json.decode(response.body);
-    //   setState(() {
-    //     prefs.setString("token", jsonData['response']['token']);
-    //   });
-    // } else {
-    //   print(response.body);
-    // }
   }
 }
