@@ -8,8 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/screens/form.dart';
 import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/signup.dart';
-
+import 'package:social_media/shared_preference_utils.dart';
 import 'package:social_media/constants.dart';
+import 'package:social_media/router.dart' as router;
+import 'package:social_media/routes.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,6 +27,10 @@ class _LoginPageState extends State<LoginPage> {
   bool _isInAsyncCall = false;
   final globalKey = GlobalKey<ScaffoldState>();
 
+@override
+  void initState(){
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,20 +93,17 @@ class _LoginPageState extends State<LoginPage> {
         data: {"email": email, 'password': password},
       );
       Map responseBody = response.data;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       String token = responseBody['token'];
       print(token);
       setState(() {
-        prefs.setString("token", token);
+        StorageUtil.putString("token", token);
+        StorageUtil.setBool("isLogin", true);
       });
       setState(() {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      Navigator.pushNamed(context,HomePageRoute);
     }
     //If any error is returned
     on DioError catch (e) {

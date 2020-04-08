@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:social_media/routes.dart';
+import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/login.dart';
+import 'package:social_media/router.dart' as router;
 
 void main() => runApp(MyApp());
 
@@ -17,7 +20,8 @@ class MyApp extends StatelessWidget {
           primaryColorDark: Color(0xff1B2939),
           accentColor: Color(0xff1CA1F1),
           iconTheme: IconThemeData(color: Color(0xff1CA1F1))),
-      home: LoginPage(),
+      initialRoute: LogInRoute,
+      onGenerateRoute: router.generateRoute,
     );
   }
 }

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:social_media/routes.dart';
+import 'package:social_media/screens/createPost.dart';
 import 'package:social_media/screens/home_body.dart';
 import 'package:social_media/screens/profile.dart';
+import 'package:social_media/shared_preference_utils.dart';
+
+import 'login.dart';
 
 class HomePage extends StatelessWidget {
+    var token = StorageUtil.getString("token");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,7 +203,7 @@ class HomePage extends StatelessWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: ()=>Navigator.pushNamed(context, CreatePostRoute),
         child: Icon(Icons.edit),
         backgroundColor: Theme.of(context).accentColor,
       ),

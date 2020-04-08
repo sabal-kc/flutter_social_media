@@ -7,7 +7,8 @@ import 'package:social_media/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:social_media/router.dart' as router;
+import 'package:social_media/routes.dart';
 import 'form.dart';
 import 'home.dart';
 
@@ -169,10 +170,7 @@ class _SignupPageState extends State<SignupPage> {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      Navigator.pushNamed(context, LogInRoute);
     }
     //If any error is returned
     on DioError catch (e) {
