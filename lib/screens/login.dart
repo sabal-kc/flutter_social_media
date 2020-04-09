@@ -95,9 +95,9 @@ class _LoginPageState extends State<LoginPage> {
       Map responseBody = response.data;
       String token = responseBody['token'];
       print(token);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
       setState(() {
-        StorageUtil.putString("token", token);
-        StorageUtil.setBool("isLogin", true);
+        preferences.setString("token", token);
       });
       setState(() {
         // stop the modal progress HUD
