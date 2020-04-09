@@ -57,8 +57,7 @@ class _TwitterBodyState extends State<TwitterBody> {
       }
     }
 
-  Widget getList(snapshot) {
-      var snapshotData = snapshot.data;
+  Widget getList(snapshotData) {
       var imageUrl = Constants.BASE_URL.replaceAll(RegExp('api'), '');
       var defaultImageUrl = imageUrl + 'default.jpg';
     return ListView.builder(
@@ -276,7 +275,7 @@ class _TwitterBodyState extends State<TwitterBody> {
           builder: (context, snapshot){
 
           if(snapshot.hasData){
-            return getList(snapshot);
+            return getList(snapshot.data);
           }
           else if(snapshot.hasError)
             return Text("Error");

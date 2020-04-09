@@ -253,16 +253,18 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       FormData formData = new FormData.fromMap({
         'text': text,
       });
+      Map<String, dynamic> commentData = {"text":text};
       
       var dio = Dio();
       dio.options.connectTimeout = 10000;
       dio.options.receiveTimeout = 5000;
       //If successful post
       try {
-        Response<Map> response = await dio.post(url+id, data: formData,options: Options(headers: {"x-auth-token":token}));
-        Map responseBody = response.data;
+        var response = await dio.post(url+id, data: commentData,options: Options(headers: {"x-auth-token":token,'Content-Type': 'application/json'}));
+        print(response);
         setState(() {
           // stop the modal progress HUD
+          commentController.text = '';
           _isInAsyncCall = false;
         });
       }
@@ -281,8 +283,8 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
               {"msg": "Server error"}
             ]
           };
-          print(e.request);
-          print(e.message);
+          print(">> ${e.request}");
+          print("<<<${e.message}");
         }
         setState(() {
           // stop the modal progress HUD

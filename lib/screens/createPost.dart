@@ -43,13 +43,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     String newText = postController.text;
     File newFile = _file;
-    String fileName = newFile.path.split('/').last;
+    FormData formData;
+    if(newFile==null){
+      formData = new FormData.fromMap({
+        'text': newText,
+      });
+    }
+    else{
+      String fileName = newFile.path.split('/').last;
+      //Send post to the api
+      formData = new FormData.fromMap({
+        'text': newText,
+        "displayImage": await MultipartFile.fromFile(newFile.path, filename: fileName),
+      });
+    }
 
-    //Send post to the api
-    FormData formData = new FormData.fromMap({
-      'text': newText,
-      "displayImage": await MultipartFile.fromFile(newFile.path, filename: fileName),
-    });
     String url = Constants.BASE_URL + "posts/";
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");

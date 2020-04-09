@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/data/profile.dart';
+import 'package:social_media/data/user.dart';
 import 'package:social_media/screens/form.dart';
 import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/signup.dart';
@@ -12,6 +14,8 @@ import 'package:social_media/shared_preference_utils.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/router.dart' as router;
 import 'package:social_media/routes.dart';
+
+import 'dummy_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -103,7 +107,21 @@ class _LoginPageState extends State<LoginPage> {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.pushNamed(context,HomePageRoute);
+
+      //Get self user id for future requests.
+      dio.options.headers['content-Type'] = 'application/json';
+      dio.options.headers["x-auth-token"] = responseBody["token"];
+      String getSelfUrl = Constants.BASE_URL + "auth/";
+      response = await dio.get(getSelfUrl);
+      print(response.data);
+      User user = User.fromJson(response.data);
+      String getSelfProfileUrl = Constants.BASE_URL + "profile/me";
+      response = await dio.get(getSelfProfileUrl);
+      Profile profile = Profile.fromJson(response.data);
+
+
+      Navigator.pushNamed(context, HomePageRoute);
+
     }
     //If any error is returned
     on DioError catch (e) {
