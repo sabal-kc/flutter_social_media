@@ -31,10 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _isInAsyncCall = false;
   final globalKey = GlobalKey<ScaffoldState>();
 
-@override
-  void initState(){
+  @override
+  void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,11 +98,10 @@ class _LoginPageState extends State<LoginPage> {
         data: {"email": email, 'password': password},
       );
       Map responseBody = response.data;
-      String token = responseBody['token'];
-      print(token);
       SharedPreferences preferences = await SharedPreferences.getInstance();
       setState(() {
-        preferences.setString("token", token);
+        preferences.setString("token", responseBody['token']);
+        preferences.setString("user_id", responseBody['id']);
       });
       setState(() {
         // stop the modal progress HUD
@@ -114,14 +114,12 @@ class _LoginPageState extends State<LoginPage> {
       String getSelfUrl = Constants.BASE_URL + "auth/";
       response = await dio.get(getSelfUrl);
       print(response.data);
-      User user = User.fromJson(response.data);
-      String getSelfProfileUrl = Constants.BASE_URL + "profile/me";
-      response = await dio.get(getSelfProfileUrl);
-      Profile profile = Profile.fromJson(response.data);
-
+      // User user = User.fromJson(response.data);
+      // String getSelfProfileUrl = Constants.BASE_URL + "profile/me";
+      // response = await dio.get(getSelfProfileUrl);
+      // Profile profile = Profile.fromJson(response.data);
 
       Navigator.pushNamed(context, HomePageRoute);
-
     }
     //If any error is returned
     on DioError catch (e) {
