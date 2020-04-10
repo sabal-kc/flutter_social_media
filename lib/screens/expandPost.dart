@@ -5,11 +5,14 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
 import 'package:dio/dio.dart';
+import 'package:social_media/screens/profile.dart';
 
 class ExpandPostPage extends StatefulWidget {
-  final String arguments;
+  final String postID;
+  final bool isLiked;
+  final String userID;
 
-  ExpandPostPage({this.arguments});
+  ExpandPostPage({this.postID, this.isLiked,this.userID});
 
   @override
   _ExpandPostPageState createState() => _ExpandPostPageState();
@@ -20,13 +23,18 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
   String tempComment = '';
   TextEditingController commentController = TextEditingController();
   bool _isInAsyncCall = false;
+  bool _isLiked = false;
 
+  void initState(){
+    super.initState();
+    _isLiked = widget.isLiked;
+  }
   // ignore: missing_return
   Future<Tweet> getPost() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");
     var dio = new Dio();
-    String url = Constants.BASE_URL + "posts/${widget.arguments}";
+    String url = Constants.BASE_URL + "posts/${widget.postID}";
 
     try {
       Response response = await dio.get(url,
@@ -54,20 +62,29 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 60.0,
-                height: 60.0,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.fitHeight,
-                    image: NetworkImage(
-                      displayImage == null
-                          ? defaultImageUrl
-                          : Constants.IMAGE_URL +
-                              displayImage
-                                  .replaceAll(RegExp("\\\\"), '')
-                                  .replaceAll(RegExp('uploads'), ''),
+              child: InkWell(
+                onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilePage(widget.userID))
+                  );
+                },
+                child: Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.fitHeight,
+                      image: NetworkImage(
+                        displayImage == null
+                            ? defaultImageUrl
+                            : Constants.IMAGE_URL +
+                                displayImage
+                                    .replaceAll(RegExp("\\\\"), '')
+                                    .replaceAll(RegExp('uploads'), ''),
+                      ),
                     ),
                   ),
                 ),
@@ -159,8 +176,42 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
 
     //************************ICON SECTION***************************************
 
+    void likePostClick(var postId,bool isLiked) async {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      var token = preferences.getString("token");
+      String url;
+      if (!isLiked)
+        url = Constants.BASE_URL + "posts/like/" + postId;
+      else
+        url =  Constants.BASE_URL + "posts/unlike/" + postId;
+      var dio = new Dio();
+      try {
+        Response response = await dio.put(url,
+            options: Options(headers: {"x-auth-token": token}));
+        setState(() {
+          _isLiked=!_isLiked;
+        });
+      }
+      catch (e) {
+        var errors;
+        if (e.response != null) {
+          print(e.response.data);
+          errors = e.response.data;
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          errors = {
+            "errors": [
+              {"msg": "Server error"}
+            ]
+          };
+          print(e.request);
+          print(e.message);
+        }
+      }
+    }
+
     Widget iconSection = Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       decoration: BoxDecoration(
           border:
               Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
@@ -168,10 +219,15 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.comment),
-          Icon(Icons.favorite_border),
-          Icon(Icons.repeat),
-          Icon(Icons.share)
+          IconButton(icon:Icon(Icons.comment),onPressed: (){},),
+          IconButton(
+            icon:_isLiked?Icon(Icons.favorite):Icon(Icons.favorite_border),
+            onPressed: ()=>likePostClick(widget.postID,_isLiked),
+          ),
+          Transform.rotate(
+              angle:22/14,
+              child: IconButton(icon:Icon(Icons.repeat),onPressed: (){},)),
+          IconButton(icon:Icon(Icons.share),onPressed: (){},),
         ],
       ),
     );
@@ -216,9 +272,10 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
 
 
 
-    List<Widget> commentSection(List comments) {
+    List<Widget> commentSection(List comments, String name) {
       List<Widget> commentWidgets = [];
       var defaultImageUrl = Constants.IMAGE_URL + 'default.jpg';
+
       for (int i = 0; i < comments.length; i++) {
         commentWidgets.add(Container(
             decoration: BoxDecoration(
@@ -240,7 +297,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
-                          image: NetworkImage(defaultImageUrl),
+                          image: NetworkImage(Constants.IMAGE_URL + comments[i]['displayImage'].replaceAll("uploads","")),
                         ),
                       ),
                     ),
@@ -255,7 +312,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                       children: <Widget>[
                         Text(comments[i]["name"],
                             style: Theme.of(context).primaryTextTheme.body1,),
-                        Text("Replying to @dwight_k_schrutte",
+                        Text("Replying to @${name.replaceAll(" ", "_").toLowerCase()}",
                             style: TextStyle(color: Theme.of(context).disabledColor)),
                         SizedBox(height: 8),
                         Text(comments[i]["text"],
@@ -268,7 +325,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Icon(Icons.favorite_border, size: 20),
+                              Icon(Icons.favorite_border),
                               SizedBox(width: 40),
                               Icon(Icons.share, size: 20),
                               SizedBox(width: 40),
@@ -298,7 +355,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       });
 
       String url = Constants.BASE_URL + "posts/comment/";
-      String id = widget.arguments;
+      String id = widget.postID;
       String text = commentController.text;
       print(text);
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -351,6 +408,12 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
         });
       }
     }
+
+
+
+
+
+
 
     Future<void> _refreshPage()async{
       setState(() {
@@ -409,7 +472,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                                   snapshot.data.likes, snapshot.data.comments),
                               iconSection,
                               Column(
-                                children: commentSection(snapshot.data.comments),
+                                children: commentSection(snapshot.data.comments,snapshot.data.name),
                               ),
                               SizedBox(height: 70,)
 

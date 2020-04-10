@@ -7,57 +7,96 @@ import 'package:social_media/routes.dart';
 import 'package:social_media/screens/profile.dart';
 
 class TwitterBody extends StatefulWidget {
-  final Function handler;
-  TwitterBody(this.handler);
+
+  final String url;
+  final String userID;
+  TwitterBody(this.url, this.userID);
+
   @override
   _TwitterBodyState createState() => _TwitterBodyState();
 }
 
 class _TwitterBodyState extends State<TwitterBody> {
-  Future<List> futureTweets;
+  //Future<List> futureTweets;
   
   @override
   void initState() {
     super.initState();
-    futureTweets = widget.handler();
   }
 
-  void likePostClick(var postId) async {
+  void likePostClick(var postId,bool isLiked) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");
-
-    String url = Constants.BASE_URL + "posts/like/" + postId;
+    String url;
+    if (!isLiked)
+      url = Constants.BASE_URL + "posts/like/" + postId;
+    else
+      url =  Constants.BASE_URL + "posts/unlike/" + postId;
     var dio = new Dio();
     try {
       Response response = await dio.put(url,
           options: Options(headers: {"x-auth-token": token}));
       setState(() {});
-    } catch (error) {
-      print("Error$error");
+    }
+    catch (e) {
+      var errors;
+      if (e.response != null) {
+        print(e.response.data);
+        errors = e.response.data;
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        errors = {
+          "errors": [
+            {"msg": "Server error"}
+          ]
+        };
+        print(e.request);
+        print(e.message);
+      }
     }
   }
+
+  Future<List> _getData() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString("token");
+    var dio = Dio ();
+
+    try{
+      Response response = await dio.get(widget.url,options: Options(headers: {"x-auth-token":token}));
+      return Tweet.ListfromJson(response.data);
+    }
+    catch(e)
+    {
+      print(e);
+    }
+    return null;
+
+  }
+
 
   Widget getList(snapshotData) {
     var imageUrl = Constants.BASE_URL.replaceAll(RegExp('api'), '');
     var defaultImageUrl = imageUrl + 'default.jpg';
     return ListView.builder(
       itemCount: snapshotData.length,
-      itemBuilder: (context, index) => InkWell(
-        onTap: () => Navigator.pushNamed(context, ExpandPostRoute,
-            arguments: snapshotData[index].id),
-        // onTap: () => Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => ProfilePage(snapshotData[index].id))),
-        child: Column(
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
+      itemBuilder: (context, index) {
+        bool isLiked=false;
+        snapshotData[index].likes.forEach((item){
+          if(item["user"]==widget.userID)
+            isLiked = true;
+        });
+        return InkWell(
+          onTap: () => Navigator.pushNamed(context, ExpandPostRoute,
+            arguments: {'id':snapshotData[index].id,'isLiked':isLiked,'userID':snapshotData[index].user}),
+          child: Column(
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
                     width: 40.0,
                     height: 40.0,
                     decoration: new BoxDecoration(
@@ -98,7 +137,8 @@ class _TwitterBodyState extends State<TwitterBody> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
-                                    snapshotData[index].user,
+                                  "@${snapshotData[index].name.replaceAll(" ","_")
+                                    .toLowerCase()}",
                                     style: TextStyle(
                                       color: Theme.of(context).disabledColor,
                                     ),
@@ -136,7 +176,7 @@ class _TwitterBodyState extends State<TwitterBody> {
                                 ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+                          padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -202,12 +242,12 @@ class _TwitterBodyState extends State<TwitterBody> {
                                     child: IconButton(
                                       padding: new EdgeInsets.all(0.0),
                                       icon: Icon(
-                                        Icons.favorite_border,
+                                        isLiked?Icons.favorite:Icons.favorite_border,
                                         size: 18.0,
                                         color: Theme.of(context).disabledColor,
                                       ),
                                       onPressed: () =>
-                                          likePostClick(snapshotData[index].id),
+                                          likePostClick(snapshotData[index].id,isLiked),
                                     ),
                                   ),
                                   SizedBox(
@@ -254,7 +294,8 @@ class _TwitterBodyState extends State<TwitterBody> {
             )
           ],
         ),
-      ),
+      );
+  }
     );
   }
   Future<void> _refreshPost()async{
@@ -265,14 +306,13 @@ class _TwitterBodyState extends State<TwitterBody> {
 
   @override
   Widget build(BuildContext context) {
-  
     return Container(
       color: Theme.of(context).primaryColor,
       child: RefreshIndicator(
         // ignore: missing_return
         onRefresh: _refreshPost,
         child: FutureBuilder(
-            future: futureTweets,
+            future: _getData(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return getList(snapshot.data);
@@ -285,5 +325,10 @@ class _TwitterBodyState extends State<TwitterBody> {
             }),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

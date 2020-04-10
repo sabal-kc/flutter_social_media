@@ -12,10 +12,10 @@ import 'package:flutter/services.dart';
 Route<dynamic> generateRoute (RouteSettings settings) {
   switch(settings.name){
     case HomePageRoute:
-      Map arguments = settings.arguments;
-      var user = arguments['user'];
-      var profile = arguments ['pofile'];
-      return MaterialPageRoute(builder: (context) => HomePage(user:user));
+      //Map arguments = settings.arguments;
+//      var user = arguments['user'];
+//      var profile = arguments ['pofile'];
+      return MaterialPageRoute(builder: (context) => HomePage());
     case LogInRoute:
       return MaterialPageRoute(builder:(context)=>LoginPage());
     case SignUpRoute:
@@ -24,8 +24,10 @@ Route<dynamic> generateRoute (RouteSettings settings) {
       var arguments = settings.arguments;
       return MaterialPageRoute(builder: (context)=>CreatePostPage());
     case ExpandPostRoute:
-      var arguments = settings.arguments;
-      return MaterialPageRoute(builder: (context)=>ExpandPostPage(arguments:arguments));
+      Map arguments = settings.arguments;
+      return MaterialPageRoute(builder: (context)=>ExpandPostPage(
+          postID:arguments['id'], isLiked:arguments['isLiked'],
+          userID:arguments["userID"]));
     default:
       return MaterialPageRoute(builder: (context) => HomePage());
   }

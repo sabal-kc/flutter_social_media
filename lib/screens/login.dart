@@ -12,10 +12,8 @@ import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/signup.dart';
 import 'package:social_media/shared_preference_utils.dart';
 import 'package:social_media/constants.dart';
-import 'package:social_media/router.dart' as router;
 import 'package:social_media/routes.dart';
 
-import 'dummy_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -102,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         preferences.setString("token", responseBody['token']);
         preferences.setString("user_id", responseBody['id']);
-      });
-      setState(() {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
@@ -113,12 +109,6 @@ class _LoginPageState extends State<LoginPage> {
       dio.options.headers["x-auth-token"] = responseBody["token"];
       String getSelfUrl = Constants.BASE_URL + "auth/";
       response = await dio.get(getSelfUrl);
-      print(response.data);
-      // User user = User.fromJson(response.data);
-      // String getSelfProfileUrl = Constants.BASE_URL + "profile/me";
-      // response = await dio.get(getSelfProfileUrl);
-      // Profile profile = Profile.fromJson(response.data);
-
       Navigator.pushNamed(context, HomePageRoute);
     }
     //If any error is returned

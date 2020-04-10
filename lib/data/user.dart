@@ -11,7 +11,7 @@ class User {
 
   User.fromJson(Map<String, dynamic> json)
       : name = json['name'],
-        id = json['id'],
+        id = json['_id'],
         email = json['email'],
         displayImageURL = Constants.IMAGE_URL +
             json['displayImage'].replaceAll(r'\', r'/'),

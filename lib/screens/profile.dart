@@ -9,6 +9,7 @@ import 'create_edit_profile.dart';
 import 'home_body.dart';
 
 class ProfilePage extends StatelessWidget {
+
   final String userId;
   bool _isMyProfile = false;
   Profile profile;
@@ -16,22 +17,25 @@ class ProfilePage extends StatelessWidget {
   ProfilePage(this.userId);
 
   Future<Profile> getData() async {
+    print("from profile:$userId");
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");
+
     var dio = new Dio();
     var id;
     if (this.userId == "") {
       _isMyProfile = true;
       id = preferences.getString("user_id");
-    } else
+    }
+    else
       id = this.userId;
     String url = Constants.BASE_URL + "profile/user/" + id;
-    print("User id: " + id);
+    print("From profile.dart:User id: " + id);
     print(url);
     try {
       Response response = await dio.get(url,
           options: Options(headers: {"x-auth-token": token}));
-      print(response.data);
+      print("From profile.dart ${response.data}");
       profile = Profile.fromJson(response.data);
       return profile;
     } catch (error) {
@@ -54,7 +58,17 @@ class ProfilePage extends StatelessWidget {
                   children: <Widget>[
                     upperProfileArea(
                         Theme.of(context).primaryColor, snapshot.data, context),
-                    Expanded(child: TwitterBody(getPostsHandler)),
+                    Expanded(
+                        child: FutureBuilder(
+                            future:getPostsHandler(),
+                            builder:(context,snapshot1) {
+                              if(snapshot1.hasData)
+                              return TwitterBody(
+                                  snapshot1.data, snapshot.data.user.id);
+                              else
+                                return Container();
+                            })
+                    ),
                   ],
                 );
               }
@@ -67,26 +81,17 @@ class ProfilePage extends StatelessWidget {
   }
 
   // ignore: missing_return
-  Future<List> getPostsHandler() async {
+  Future<String> getPostsHandler() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    var token = preferences.getString("token");
     var id;
     if (this.userId == "")
       id = preferences.getString("user_id");
     else
       id = this.userId;
     print("User id: " + id);
-    var dio = new Dio();
-    String url = Constants.BASE_URL + "posts/user/" + id;
-    print(url);
 
-    try {
-      Response response = await dio.get(url,
-          options: Options(headers: {"x-auth-token": token}));
-      return Tweet.ListfromJson(response.data);
-    } catch (error) {
-      print("Error$error");
-    }
+    String url = Constants.BASE_URL + "posts/user/" + id;
+    return url;
   }
 
   onEditProfileClicked(BuildContext context) async {
@@ -109,7 +114,7 @@ class ProfilePage extends StatelessWidget {
             decoration: BoxDecoration(
                 image: DecorationImage(
               fit: BoxFit.fitWidth,
-              image: NetworkImage(profile.coverImage),
+              image: NetworkImage(profile.coverImage.replaceAll("uploads", "")),
             )),
           ),
           Visibility(
