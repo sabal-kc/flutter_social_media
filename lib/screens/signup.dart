@@ -182,10 +182,7 @@ class _SignupPageState extends State<SignupPage> {
       print(response.data);
       User user = User.fromJson(response.data);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CreateEditProfile(user, null)),
-      );
+      Navigator.popAndPushNamed(context, CreateProfileRoute,arguments: {"user":user,"profile":null});
     }
     //If any error is returned
     on DioError catch (e) {

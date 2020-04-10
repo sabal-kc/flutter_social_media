@@ -105,10 +105,8 @@ class HomePage extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 snapshot.data.name,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                style: Theme.of(context).primaryTextTheme.title
+                                    .merge(TextStyle(fontWeight: FontWeight.bold)),
                               ),
                               Icon(Icons.arrow_drop_down)
                             ],

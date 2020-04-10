@@ -20,7 +20,7 @@ class CreateEditProfile extends StatefulWidget {
   final User user;
   final Profile profile;
 
-  CreateEditProfile(this.user, this.profile);
+  CreateEditProfile({this.user, this.profile});
 
   @override
   _CreateEditProfileState createState() => _CreateEditProfileState();
@@ -46,13 +46,11 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     if (widget.profile != null) {
       displayTitle = "Edit";
       bioController.text = widget.profile.bio;
-      print(widget.profile.coverImage);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.user.displayImageURL);
     return Scaffold(
         key: globalKey,
 
@@ -180,10 +178,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ProfilePage("")),
-      );
+      Navigator.pop(context);
     }
     //If any error is returned
     on DioError catch (e) {

@@ -139,10 +139,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget registerUserText() {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SignupPage()),
-        );
+        Navigator.pushNamed(context, SignUpRoute);
       },
       child: Padding(
         padding: const EdgeInsets.all(12.0),
