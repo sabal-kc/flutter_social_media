@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/data/profile.dart';
 import 'package:social_media/model/Post.dart';
+import 'package:social_media/routes.dart';
 
 import '../constants.dart';
 import 'create_edit_profile.dart';
@@ -95,11 +96,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   onEditProfileClicked(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CreateEditProfile(profile.user, profile)),
-    );
+    Navigator.pushNamed(context, CreateProfileRoute,arguments: {"user":profile.user, "profile":profile});
   }
 
   Widget upperProfileArea(Color color, Profile profile, BuildContext context) {
@@ -184,6 +181,11 @@ class ProfilePage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 14),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
+                child: Text("Joined on " +
+                    profile.user.dateJoined.substring(0, 10),style:TextStyle(color: Theme.of(context).disabledColor)),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),

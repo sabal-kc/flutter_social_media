@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:social_media/screens/create_edit_profile.dart';
 import 'screens/login.dart';
 import 'package:social_media/screens/signup.dart';
 import 'package:social_media/screens/home.dart';
@@ -28,6 +30,9 @@ Route<dynamic> generateRoute (RouteSettings settings) {
       return MaterialPageRoute(builder: (context)=>ExpandPostPage(
           postID:arguments['id'], isLiked:arguments['isLiked'],
           userID:arguments["userID"]));
+    case CreateProfileRoute:
+      Map arguments = settings.arguments;
+      return MaterialPageRoute(builder: (context)=>CreateEditProfile(user: arguments["user"],profile: arguments["profile"]));
     default:
       return MaterialPageRoute(builder: (context) => HomePage());
   }

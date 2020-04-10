@@ -19,7 +19,7 @@ class CreateEditProfile extends StatefulWidget {
   final User user;
   final Profile profile;
 
-  CreateEditProfile(this.user, this.profile);
+  CreateEditProfile({this.user, this.profile});
 
   @override
   _CreateEditProfileState createState() => _CreateEditProfileState();
@@ -45,13 +45,11 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     if (widget.profile != null) {
       displayTitle = "Edit";
       bioController.text = widget.profile.bio;
-      print(widget.profile.coverImage);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.user.displayImageURL);
     return Scaffold(
         key: globalKey,
         // resizeToAvoidBottomInset: false,
@@ -162,10 +160,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Dummy(widget.user, profile)),
-      );
+      Navigator.pop(context);
     }
     //If any error is returned
     on DioError catch (e) {
@@ -237,7 +232,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
               width: double.infinity,
               child: CachedNetworkImage(
                 fit: BoxFit.fill,
-                imageUrl: widget.profile.coverImage,
+                imageUrl: widget.profile.coverImage.replaceAll("uploads", ""),
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -256,7 +251,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
   Widget showDisplayImage() {
     return CachedNetworkImage(
-      imageUrl: widget.user.displayImageURL,
+      imageUrl: widget.user.displayImageURL.replaceAll("uploads", ""),
       imageBuilder: (context, imageProvider) =>
           CircleAvatar(radius: 50, backgroundImage: imageProvider),
       placeholder: (context, url) => CircularProgressIndicator(),

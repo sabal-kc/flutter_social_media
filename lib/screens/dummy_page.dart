@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media/data/profile.dart';
 import 'package:social_media/data/user.dart';
-import 'package:social_media/screens/create_edit_profile.dart';
+import 'package:social_media/routes.dart';
 
 class Dummy extends StatelessWidget {
   final User user;
@@ -26,11 +26,7 @@ class Dummy extends StatelessWidget {
           RaisedButton(
               child: Text("Edit profile"),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CreateEditProfile(user, profile)),
-                );
+                Navigator.pushNamed(context, CreateProfileRoute,arguments:{"user":user,"profile":profile});
               }),
         ],
       ),
