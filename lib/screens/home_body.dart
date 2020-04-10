@@ -217,10 +217,13 @@ class _TwitterBodyState extends State<TwitterBody> {
                                     width: 18.0,
                                     child: IconButton(
                                       padding: new EdgeInsets.all(0.0),
-                                      icon: Icon(
-                                        Icons.replay,
-                                        size: 18.0,
-                                        color: Theme.of(context).disabledColor,
+                                      icon: Transform.rotate(
+                                        angle: 22/14,
+                                        child: Icon(
+                                          Icons.repeat,
+                                          size: 18.0,
+                                          color: Theme.of(context).disabledColor,
+                                        ),
                                       ),
                                       onPressed: () {},
                                     ),

@@ -6,6 +6,7 @@ import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
 import 'package:dio/dio.dart';
 import 'package:social_media/screens/profile.dart';
+import 'package:social_media/theme.dart';
 
 class ExpandPostPage extends StatefulWidget {
   final String postID;
@@ -119,7 +120,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
           border:
-              Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
+              Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
       child: Row(
         children: <Widget>[
           Text(
@@ -152,7 +153,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     Widget postInfoSection(List likes, List comments) => Container(
         decoration: BoxDecoration(
             border:
-                Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
+                Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
         padding: EdgeInsets.all(10),
         child: Row(
           children: <Widget>[
@@ -214,7 +215,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       decoration: BoxDecoration(
           border:
-              Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
+              Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +281,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
         commentWidgets.add(Container(
             decoration: BoxDecoration(
                 border: Border(
-                    bottom: BorderSide(width: 0.3, color: Colors.white70))),
+                    bottom: BorderSide(width: 0.3, color: Theme.of(context).disabledColor))),
             padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -506,12 +507,12 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                       maxLines: null,
                       maxLength: 160,
                       keyboardType: TextInputType.multiline,
-                      style: TextStyle(color: Colors.white),
+                      style: Theme.of(context).primaryTextTheme.body1,
                       enabled: true,
                       decoration: InputDecoration(
                           enabled: true,
                           hintText: "Add Your Comment",
-                          hintStyle: TextStyle(color: Colors.white),
+                          hintStyle: Theme.of(context).primaryTextTheme.body1,
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white))),
                     ),
