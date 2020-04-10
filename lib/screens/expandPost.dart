@@ -101,7 +101,7 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                     style: Theme.of(context).primaryTextTheme.body1,
                   ),
                   Text(
-                    user,
+                    "@${name.replaceAll(" ", " ").toLowerCase()}",
                     style: TextStyle(color: Theme.of(context).disabledColor),
                   )
                 ],
