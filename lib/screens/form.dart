@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-
+import 'package:social_media/theme.dart';
 
 TextFormField emailField(String title, TextEditingController controller) {
   return TextFormField(
@@ -137,21 +136,26 @@ SizedBox submitButton(String title, Color color, Function onClick) {
 
 TextFormField bioField(String title, TextEditingController controller) {
   return TextFormField(
-    controller: controller,
-    keyboardType: TextInputType.multiline,
-    minLines: 3,
-    maxLines: null,
-    validator: (value) {
-      if (value.isEmpty) {
-        return 'Please enter some text';
-      }
-      return null;
-    },
-    decoration: InputDecoration(
-      labelText: title,
-      hintText: 'Enter ' + title,
-      filled: true,
-      fillColor: Colors.white60,
-    ),
-  );
+      controller: controller,
+      keyboardType: TextInputType.multiline,
+      minLines: 3,
+      maxLines: null,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+      style: TextStyle(
+        color: Colors.white,
+      ),
+      decoration: InputDecoration(
+        labelText: title,
+        labelStyle: TextStyle(
+          color: ThemeChanger.darkTheme.accentColor,
+        ),
+        hintText: 'Enter ' + title,
+        filled: true,
+        fillColor: ThemeChanger.darkTheme.primaryColorDark,
+      ));
 }

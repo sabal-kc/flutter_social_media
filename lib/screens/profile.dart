@@ -9,7 +9,6 @@ import 'create_edit_profile.dart';
 import 'home_body.dart';
 
 class ProfilePage extends StatelessWidget {
-
   final String userId;
   bool _isMyProfile = false;
   Profile profile;
@@ -26,8 +25,7 @@ class ProfilePage extends StatelessWidget {
     if (this.userId == "") {
       _isMyProfile = true;
       id = preferences.getString("user_id");
-    }
-    else
+    } else
       id = this.userId;
     String url = Constants.BASE_URL + "profile/user/" + id;
     print("From profile.dart:User id: " + id);
@@ -60,15 +58,14 @@ class ProfilePage extends StatelessWidget {
                         Theme.of(context).primaryColor, snapshot.data, context),
                     Expanded(
                         child: FutureBuilder(
-                            future:getPostsHandler(),
-                            builder:(context,snapshot1) {
-                              if(snapshot1.hasData)
-                              return TwitterBody(
-                                  snapshot1.data, snapshot.data.user.id);
+                            future: getPostsHandler(),
+                            builder: (context, snapshot1) {
+                              if (snapshot1.hasData)
+                                return TwitterBody(
+                                    snapshot1.data, snapshot.data.user.id);
                               else
                                 return Container();
-                            })
-                    ),
+                            })),
                   ],
                 );
               }
@@ -95,7 +92,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   onEditProfileClicked(BuildContext context) async {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => CreateEditProfile(profile.user, profile)),
@@ -159,8 +156,8 @@ class ProfilePage extends StatelessWidget {
                             shape: CircleBorder(),
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image:
-                                    NetworkImage(profile.user.displayImageURL.replaceAll("uploads", ""))),
+                                image: NetworkImage(profile.user.displayImageURL
+                                    .replaceAll("uploads", ""))),
                           ),
                         ),
                       ),
@@ -170,10 +167,8 @@ class ProfilePage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  profile.user.name,
-                  style: Theme.of(context).primaryTextTheme.title
-                ),
+                child: Text(profile.user.name,
+                    style: Theme.of(context).primaryTextTheme.title),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -189,19 +184,17 @@ class ProfilePage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   profile.bio,
-                  style:Theme.of(context).primaryTextTheme.body1,
+                  style: Theme.of(context).primaryTextTheme.body1,
                 ),
               ),
               Container(
                 padding: const EdgeInsets.only(left: 8.0, top: 24, bottom: 10),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Theme.of(context).disabledColor,
-                      width: 0.4
-                    )
-                  )
-                ),
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Theme.of(context).disabledColor,
+                            width: 0.4))),
                 child: Text(
                   'Recent Posts',
                   style: TextStyle(

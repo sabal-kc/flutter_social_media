@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:social_media/data/profile.dart';
 import 'package:social_media/data/user.dart';
 import 'package:social_media/screens/dummy_page.dart';
+import 'package:social_media/screens/profile.dart';
 
 import 'form.dart';
 import 'home.dart';
@@ -54,6 +55,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     print(widget.user.displayImageURL);
     return Scaffold(
         key: globalKey,
+
         // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
@@ -69,64 +71,80 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
             )
           ],
         ),
-        body: ModalProgressHUD(
-          inAsyncCall: _isInAsyncCall,
-          opacity: 0.5,
-          progressIndicator: CircularProgressIndicator(),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    showCoverImage(),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: new EdgeInsets.only(
-                          top: 3 / 4 * coverImageHeight,
-                          right: 10.0,
-                          left: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          showDisplayImage(),
-                          Row(
-                            children: <Widget>[
-                              imagePickBtn(Icons.camera_alt, startCamera),
-                              imagePickBtn(Icons.photo_album, startGallery)
-                            ],
-                          ),
-                        ],
+        body: Container(
+          height: double.infinity,
+          color: Theme.of(context).primaryColor,
+          child: ModalProgressHUD(
+            inAsyncCall: _isInAsyncCall,
+            opacity: 0.5,
+            progressIndicator: CircularProgressIndicator(),
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      showCoverImage(),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        padding: new EdgeInsets.only(
+                            top: 3 / 4 * coverImageHeight,
+                            right: 10.0,
+                            left: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            showDisplayImage(),
+                            Row(
+                              children: <Widget>[
+                                imagePickBtn(Icons.camera_alt, startCamera),
+                                imagePickBtn(Icons.photo_album, startGallery)
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
-                      child: Text(
-                        widget.user.name,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 22),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
+                        child: Text(widget.user.name,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).primaryTextTheme.title),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 4.0),
-                      child: Text(widget.user.email),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
-                      child: Text("Joined on " +
-                          widget.user.dateJoined.substring(0, 10)),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: bioField("Bio", bioController),
-                ),
-              ],
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 4.0),
+                        child: Text(
+                          widget.user.email,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 12.0),
+                        child: Text(
+                          "Joined on " +
+                              widget.user.dateJoined.substring(0, 10),
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: bioField("Bio", bioController),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
@@ -162,9 +180,9 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
         // stop the modal progress HUD
         _isInAsyncCall = false;
       });
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Dummy(widget.user, profile)),
+        MaterialPageRoute(builder: (context) => ProfilePage("")),
       );
     }
     //If any error is returned
@@ -219,6 +237,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
           base64Image = base64Encode(snapshot.data.readAsBytesSync());
 
           return Container(
+            color: Theme.of(context).primaryColor,
             height: coverImageHeight,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -237,7 +256,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
               width: double.infinity,
               child: CachedNetworkImage(
                 fit: BoxFit.fill,
-                imageUrl: widget.profile.coverImage,
+                imageUrl: widget.profile.coverImage.replaceAll("uploads", ""),
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -256,7 +275,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
   Widget showDisplayImage() {
     return CachedNetworkImage(
-      imageUrl: widget.user.displayImageURL,
+      imageUrl: widget.user.displayImageURL.replaceAll("uploads", ""),
       imageBuilder: (context, imageProvider) =>
           CircleAvatar(radius: 50, backgroundImage: imageProvider),
       placeholder: (context, url) => CircularProgressIndicator(),

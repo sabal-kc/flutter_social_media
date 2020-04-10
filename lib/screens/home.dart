@@ -12,7 +12,6 @@ import 'package:social_media/theme.dart';
 import '../constants.dart';
 
 class HomePage extends StatelessWidget {
-
   Future<User> getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");
@@ -29,8 +28,6 @@ class HomePage extends StatelessWidget {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString("user_id");
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -137,16 +134,25 @@ class HomePage extends StatelessWidget {
                             padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
                             child: Column(
                               children: <Widget>[
-                                ListTile(
-                                  title: Text(
-                                    'Profile',
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .body1,
-                                  ),
-                                  leading: Icon(
-                                    Icons.person,
-                                    color: Theme.of(context).disabledColor,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfilePage("")));
+                                  },
+                                  child: ListTile(
+                                    title: Text(
+                                      'Profile',
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body1,
+                                    ),
+                                    leading: Icon(
+                                      Icons.person,
+                                      color: Theme.of(context).disabledColor,
+                                    ),
                                   ),
                                 ),
                                 ListTile(
@@ -215,58 +221,13 @@ class HomePage extends StatelessWidget {
                           color: Theme.of(context).disabledColor,
                           height: 0.5,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 30.0,
-                                width: 30.0,
-                                child: IconButton(
-                                  padding: new EdgeInsets.all(0.0),
-                                  icon: Icon(
-                                    Icons.wb_incandescent,
-                                    size: 32.0,
-                                  ),
-                                  onPressed: () =>
-                                      _themeChanger.setTheme("light"),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30.0,
-                                width: 30.0,
-                                child: IconButton(
-                                  padding: new EdgeInsets.all(0.0),
-                                  icon: Icon(
-                                    Icons.lightbulb_outline,
-                                    size: 32.0,
-                                  ),
-                                  onPressed: () =>
-                                      _themeChanger.setTheme("dark"),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30.0,
-                                width: 30.0,
-                                child: IconButton(
-                                  padding: new EdgeInsets.all(0.0),
-                                  icon: Icon(
-                                    Icons.camera_alt,
-                                    size: 32.0,
-                                  ),
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
                       ],
                     )),
               ),
 
               floatingActionButton: FloatingActionButton(
-                onPressed: () => Navigator.pushNamed(context, CreatePostRoute,arguments: snapshot.data.displayImageURL),
+                onPressed: () => Navigator.pushNamed(context, CreatePostRoute,
+                    arguments: snapshot.data.displayImageURL),
                 child: Icon(Icons.edit),
                 backgroundColor: Theme.of(context).accentColor,
               ),
@@ -303,6 +264,5 @@ class HomePage extends StatelessWidget {
   String getPostsHandler() {
     String url = Constants.BASE_URL + "posts/";
     return url;
-
   }
 }
