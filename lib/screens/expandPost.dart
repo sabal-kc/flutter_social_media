@@ -6,7 +6,6 @@ import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
 import 'package:dio/dio.dart';
 
-
 class ExpandPostPage extends StatefulWidget {
   final String arguments;
 
@@ -17,11 +16,10 @@ class ExpandPostPage extends StatefulWidget {
 }
 
 class _ExpandPostPageState extends State<ExpandPostPage> {
-  
   Future<Tweet> futureTweet;
-  String tempComment='';
+  String tempComment = '';
   TextEditingController commentController = TextEditingController();
-  bool _isInAsyncCall= false;
+  bool _isInAsyncCall = false;
 
   // ignore: missing_return
   Future<Tweet> getPost() async {
@@ -30,32 +28,28 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     var dio = new Dio();
     String url = Constants.BASE_URL + "posts/${widget.arguments}";
 
-    try{
-      Response response = await dio.get(url,options: Options(headers: {"x-auth-token":token}));
+    try {
+      Response response = await dio.get(url,
+          options: Options(headers: {"x-auth-token": token}));
       return Tweet.fromJson(response.data);
-
-    }
-    catch(error){
+    } catch (error) {
       print("Error$error");
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     futureTweet = getPost();
-    Widget nameSection(String name,String displayImage,String user) {
 
+    //***************************************************************************
+    //************************NAME SECTION***************************************
+    //***************************************************************************
+
+    Widget nameSection(String name, String displayImage, String user) {
       var defaultImageUrl = Constants.IMAGE_URL + 'default.jpg';
       return Container(
         decoration: BoxDecoration(
-            border: Border(
-                top: BorderSide(
-                    width: 0.3,
-                    color: Colors.white
-                )
-            )
-        ),
+            border: Border(top: BorderSide(width: 0.3, color: Colors.white))),
         child: Row(
           children: <Widget>[
             Padding(
@@ -67,20 +61,31 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.fitHeight,
-                    image: NetworkImage(displayImage==null?defaultImageUrl:Constants.IMAGE_URL+displayImage.replaceAll(RegExp("\\\\"),'')
-                        .replaceAll(RegExp('uploads'),''),),
+                    image: NetworkImage(
+                      displayImage == null
+                          ? defaultImageUrl
+                          : Constants.IMAGE_URL +
+                              displayImage
+                                  .replaceAll(RegExp("\\\\"), '')
+                                  .replaceAll(RegExp('uploads'), ''),
+                    ),
                   ),
                 ),
               ),
             ),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(name, style: TextStyle(color: Colors.white),),
-                  Text(user, style: TextStyle(color: Colors.white70),)
+                  Text(
+                    name,
+                    style: Theme.of(context).primaryTextTheme.body1,
+                  ),
+                  Text(
+                    user,
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  )
                 ],
               ),
             )
@@ -89,61 +94,76 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       );
     }
 
+    //***************************************************************************
+    //************************TIME DATE SECTION***************************************
+    //***************************************************************************
 
-    Widget timeDateSection =
-    Container(
+    Widget timeDateSection = Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 0.3,
-                  color: Colors.white70
-              )
-          )
-      ),
+          border:
+              Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
       child: Row(
         children: <Widget>[
-          Text("12:45", style: TextStyle(color: Colors.white70),),
-          SizedBox(width: 10,),
-          Text("08 Apr 20",style: TextStyle(color: Colors.white70),),
-          SizedBox(width: 10,),
-          Text("Nepwer For Android",style: TextStyle(color: Colors.blue),),
-
+          Text(
+            "12:45",
+            style: TextStyle(color: Theme.of(context).disabledColor),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            "08 Apr 20",
+            style: TextStyle(color: Theme.of(context).disabledColor),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            "Nepwer For Android",
+            style: TextStyle(color: Colors.blue),
+          ),
         ],
       ),
     );
 
+    //***************************************************************************
+    //************************POSTINFO SECTION***************************************
+    //***************************************************************************
 
-    Widget postInfoSection(List likes, List comments)=>Container(
 
+    Widget postInfoSection(List likes, List comments) => Container(
         decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-                    width: 0.3,
-                    color: Colors.white70
-                )
-            )
-        ),
+            border:
+                Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
         padding: EdgeInsets.all(10),
-        child:Row(
+        child: Row(
           children: <Widget>[
-            Text("${likes.length} Comments", style: TextStyle(color: Colors.white),),
-            SizedBox(width: 15,),
-            Text("${comments.length}Likes", style: TextStyle(color: Colors.white),),
+            Text(
+              "${comments.length}",
+              style: Theme.of(context).primaryTextTheme.body1,
+            ),
+            Text(" Comments", style:TextStyle(color:Theme.of(context).disabledColor)),
+            SizedBox(
+              width: 15,
+            ),
+            Text(
+              "${likes.length}",
+              style: Theme.of(context).primaryTextTheme.body1,
+            ),
+            Text(" Likes", style: TextStyle(color: Theme.of(context).disabledColor))
           ],
-        )
-    );
+        ));
+
+
+
+    //************************ICON SECTION***************************************
 
     Widget iconSection = Container(
-      padding: EdgeInsets.fromLTRB(0, 10,10,10),
+      padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
       decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 0.3,
-                  color: Colors.white70
-              )
-          )
-      ),
+          border:
+              Border(bottom: BorderSide(width: 0.3, color: Colors.white70))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,93 +176,127 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       ),
     );
 
-    Widget postSection(String text)=> Text(text, style:TextStyle(
-      color: Colors.white,
-      fontSize: 18.0,
-      height: 1.5,
-    )
-    );
+
+    //***************************************************************************
+    //************************POST SECTION***************************************
+    //***************************************************************************
+
+
+    Widget postSection(String text) => Text(text,
+        style:Theme.of(context).primaryTextTheme.body1.merge(TextStyle(
+          fontSize: 18.0,
+          height: 1.5,
+        )));
+
+    //***************************************************************************
+    //************************IMAGE SECTION***************************************
+    //***************************************************************************
+
+    Widget imageSection (String imageUrl){
+      var url = Constants.IMAGE_URL+imageUrl.replaceAll("uploads", "");
+      return Container(
+        padding: EdgeInsets.all(10),
+        child:SizedBox(
+          height: 250,
+          width:200,
+          child: Image(
+            image: NetworkImage(url)
+          ),
+        )
+
+        );
+
+    }
+
+
+
+    //***************************************************************************
+    //************************COMMENTS SECTION***************************************
+    //***************************************************************************
+
+
 
     List<Widget> commentSection(List comments) {
-
       List<Widget> commentWidgets = [];
       var defaultImageUrl = Constants.IMAGE_URL + 'default.jpg';
-      for (int i =0 ; i<comments.length;i++){
-       commentWidgets.add(
-           Container(
-               decoration: BoxDecoration(
-                   border: Border(
-                       bottom: BorderSide(
-                           width: 0.3,
-                           color: Colors.white70
-                       )
-                   )
-               ),
-               padding: EdgeInsets.all(10),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: <Widget>[
-                   Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     mainAxisAlignment: MainAxisAlignment.start,
-                     children: <Widget>[
-                       Container(
-                         width: 60.0,
-                         height: 60.0,
-                         decoration: new BoxDecoration(
-                           shape: BoxShape.circle,
-                           image: DecorationImage(
-                             fit: BoxFit.fitHeight,
-                             image: NetworkImage(defaultImageUrl),
-                           ),
-                         ),
-                       ),
-                     ],
-                   ),
-                   Container(
-                     padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                       children: <Widget>[
-                         Text(comments[i]["name"], style: TextStyle(color: Colors.white)),
-                         Text("Replying to @dwight_k_schrutte",
-                             style: TextStyle(color: Colors.grey)),
-                         SizedBox(height: 8),
-                         Text(comments[i]["text"],
-                             style: TextStyle(fontSize: 13, color: Colors.white)),
-                         Container(
-                           padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
-                           child: Row(
-                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: <Widget>[
-                               Icon(Icons.favorite_border, size: 20),
-                               SizedBox(width: 40),
-                               Icon(Icons.share, size: 20),
-                               SizedBox(width: 40),
-                               Text("Report", style: TextStyle(color: Colors.blue))
-                             ],
-                           ),
-                         ),
-                       ],
-                     ),
-                   )
-                 ],
-               )
-           )
-       ) ;
+      for (int i = 0; i < comments.length; i++) {
+        commentWidgets.add(Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 0.3, color: Colors.white70))),
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: 60.0,
+                      height: 60.0,
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.fitHeight,
+                          image: NetworkImage(defaultImageUrl),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(comments[i]["name"],
+                            style: Theme.of(context).primaryTextTheme.body1,),
+                        Text("Replying to @dwight_k_schrutte",
+                            style: TextStyle(color: Theme.of(context).disabledColor)),
+                        SizedBox(height: 8),
+                        Text(comments[i]["text"],
+                            style:Theme.of(context).primaryTextTheme.body1.merge(
+                                TextStyle(fontSize: 15,
+                                    height: 1.5,))),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Icon(Icons.favorite_border, size: 20),
+                              SizedBox(width: 40),
+                              Icon(Icons.share, size: 20),
+                              SizedBox(width: 40),
+                              Text("Report",
+                                  style: TextStyle(color: Colors.blue))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )));
       }
       return commentWidgets;
     }
 
-    void addCommentClickHandler()async{
-      
+    //***************************************************************************
+    //************************HANDLER SECTION***************************************
+    //***************************************************************************
+
+
+    void addCommentClickHandler() async {
       setState(() {
         _isInAsyncCall = true;
       });
-      
+
       String url = Constants.BASE_URL + "posts/comment/";
       String id = widget.arguments;
       String text = commentController.text;
@@ -253,14 +307,19 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       FormData formData = new FormData.fromMap({
         'text': text,
       });
-      Map<String, dynamic> commentData = {"text":text};
-      
+      Map<String, dynamic> commentData = {"text": text};
+
       var dio = Dio();
       dio.options.connectTimeout = 10000;
       dio.options.receiveTimeout = 5000;
       //If successful post
       try {
-        var response = await dio.post(url+id, data: commentData,options: Options(headers: {"x-auth-token":token,'Content-Type': 'application/json'}));
+        var response = await dio.post(url + id,
+            data: commentData,
+            options: Options(headers: {
+              "x-auth-token": token,
+              'Content-Type': 'application/json'
+            }));
         print(response);
         setState(() {
           // stop the modal progress HUD
@@ -291,96 +350,113 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
           _isInAsyncCall = false;
         });
       }
-
-
-
     }
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title:Text("Post"),
-          actions: <Widget>[
-            tempComment==''?Container():
-                Container(
+
+    Future<void> _refreshPage()async{
+      setState(() {
+
+      });
+    }
+
+    //***************************************************************************
+    //************************MAIN SECTION***************************************
+    //***************************************************************************
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("Post"),
+        actions: <Widget>[
+          tempComment == ''
+              ? Container()
+              : Container(
                   padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     color: Theme.of(context).primaryColor,
-                    onPressed: ()=>addCommentClickHandler(),
-                    child: Text("Comment", style: TextStyle(color: Colors.white),),
+                    onPressed: () => addCommentClickHandler(),
+                    child: Text(
+                      "Comment",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 )
-          ],
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        body: ModalProgressHUD(
+        ],
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      body: RefreshIndicator(
+        onRefresh: _refreshPage,
+        child: ModalProgressHUD(
           inAsyncCall: _isInAsyncCall,
           opacity: 0.5,
           progressIndicator: CircularProgressIndicator(),
           child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Stack(
-                children: [FutureBuilder(
-                    future: futureTweet,
-                    builder: (context, snapshot){
-                      if(snapshot.hasData){
-                        return ListView(
-                          children: <Widget>[
-                            nameSection(snapshot.data.name,snapshot.data.displayImage,snapshot.data.user),
-                            postSection(snapshot.data.text),
-                            timeDateSection,
-                            postInfoSection(snapshot.data.likes, snapshot.data.comments),
-                            iconSection,
-                            Column(
-                              children: commentSection(snapshot.data.comments),
-                            )
-                          ],
-                        );
-                      }
-                      else if(snapshot.hasError)
-                        return Text("Error");
-                      else
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                    }
-                ),
-                  Positioned(
-                      left:10,
-                      right:0,
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                      child:Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: TextFormField(
-                          onChanged: (value){
-                            setState(() {
-                              tempComment = value;
-                            });
-                          },
-                          controller: commentController,
-                          maxLines: null,
-                          maxLength: 160,
-                          keyboardType: TextInputType.multiline,
-                          style: TextStyle(color: Colors.white),
-                          enabled: true,
-                          decoration: InputDecoration(
-                            enabled: true,
-                            hintText: "Add Your Comment",
-                            hintStyle: TextStyle(color: Colors.white),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color:Colors.white
-                              )
-                            )
-                          ),
-                        ),
-                      )
-                  )
-                ]),
-            ),
-        ),
-        );
-    }
-  }
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Stack(
+                children: [
+                  FutureBuilder(
+                      future: futureTweet,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(
+                            children: <Widget>[
+                              nameSection(snapshot.data.name,
+                                  snapshot.data.displayImage, snapshot.data.user),
+                              postSection(snapshot.data.text),
+                              snapshot.data.image==null?Container():
+                              imageSection(snapshot.data.image),
+                              timeDateSection,
+                              postInfoSection(
+                                  snapshot.data.likes, snapshot.data.comments),
+                              iconSection,
+                              Column(
+                                children: commentSection(snapshot.data.comments),
+                              ),
+                              SizedBox(height: 70,)
 
+                            ],
+                          );
+                        } else if (snapshot.hasError)
+                          return Text("Error");
+                        else
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                      }),
+
+
+
+              Positioned(
+                  left: 10,
+                  right: 0,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          tempComment = value;
+                        });
+                      },
+                      controller: commentController,
+                      maxLines: null,
+                      maxLength: 160,
+                      keyboardType: TextInputType.multiline,
+                      style: TextStyle(color: Colors.white),
+                      enabled: true,
+                      decoration: InputDecoration(
+                          enabled: true,
+                          hintText: "Add Your Comment",
+                          hintStyle: TextStyle(color: Colors.white),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
+                    ),
+                  ))
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -69,14 +69,14 @@ class ProfilePage extends StatelessWidget {
                       height: 20.0,
                       decoration: new BoxDecoration(
                         color: Colors.transparent,
-                        border: new Border.all(color: Colors.grey, width: 2.0),
+                        border: new Border.all(color: Theme.of(context).disabledColor, width: 2.0),
                         borderRadius: new BorderRadius.circular(10.0),
                       ),
                       child: new Center(
                         child: new Text(
                           'Edit Profile',
                           style: new TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold),
+                              color: Theme.of(context).disabledColor, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -131,7 +131,7 @@ class ProfilePage extends StatelessWidget {
                         child: Text(
                           '@dan_carol',
                           style: TextStyle(
-                              color: Colors.grey,
+                              color: Theme.of(context).disabledColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 14),
                         ),
@@ -190,7 +190,7 @@ class ProfilePage extends StatelessWidget {
                                         child: Text(
                                           usernames[index],
                                           style: TextStyle(
-                                            color: Colors.grey,
+                                            color: Theme.of(context).disabledColor,
                                           ),
                                         ),
                                       ),
@@ -198,7 +198,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                   Icon(
                                     Icons.arrow_drop_down,
-                                    color: Colors.grey,
+                                    color: Theme.of(context).disabledColor,
                                   )
                                 ],
                               ),
@@ -241,7 +241,7 @@ class ProfilePage extends StatelessWidget {
                                             icon: Icon(
                                               Icons.chat_bubble_outline,
                                               size: 18.0,
-                                              color: Colors.grey,
+                                              color: Theme.of(context).disabledColor,
                                             ),
                                             onPressed: () {},
                                           ),
@@ -252,7 +252,7 @@ class ProfilePage extends StatelessWidget {
                                             child: Text(
                                               replies[index],
                                               style:
-                                                  TextStyle(color: Colors.grey),
+                                                  TextStyle(color: Theme.of(context).disabledColor),
                                             )),
                                       ],
                                     ),
@@ -268,7 +268,7 @@ class ProfilePage extends StatelessWidget {
                                             icon: Icon(
                                               Icons.replay,
                                               size: 18.0,
-                                              color: Colors.grey,
+                                              color: Theme.of(context).disabledColor,
                                             ),
                                             onPressed: () {},
                                           ),
@@ -279,7 +279,7 @@ class ProfilePage extends StatelessWidget {
                                             child: Text(
                                               retweets[index],
                                               style:
-                                                  TextStyle(color: Colors.grey),
+                                                  TextStyle(color: Theme.of(context).disabledColor),
                                             )),
                                       ],
                                     ),
@@ -295,7 +295,7 @@ class ProfilePage extends StatelessWidget {
                                             icon: Icon(
                                               Icons.favorite_border,
                                               size: 18.0,
-                                              color: Colors.grey,
+                                              color: Theme.of(context).disabledColor,
                                             ),
                                             onPressed: () {},
                                           ),
@@ -306,7 +306,7 @@ class ProfilePage extends StatelessWidget {
                                             child: Text(
                                               likes[index],
                                               style:
-                                                  TextStyle(color: Colors.grey),
+                                                  TextStyle(color: Theme.of(context).disabledColor),
                                             )),
                                       ],
                                     ),
@@ -318,7 +318,7 @@ class ProfilePage extends StatelessWidget {
                                         icon: Icon(
                                           Icons.share,
                                           size: 18.0,
-                                          color: Colors.grey,
+                                          color: Theme.of(context).disabledColor,
                                         ),
                                         onPressed: () {},
                                       ),
@@ -336,7 +336,7 @@ class ProfilePage extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Container(
                       width: double.infinity,
-                      color: Colors.grey,
+                      color: Theme.of(context).disabledColor,
                       height: 0.5,
                     ),
                   )

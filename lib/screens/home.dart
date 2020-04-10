@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/constants.dart';
 import 'package:social_media/routes.dart';
 import 'package:social_media/screens/createPost.dart';
 import 'package:social_media/screens/home_body.dart';
 import 'package:social_media/screens/profile.dart';
 import 'package:social_media/shared_preference_utils.dart';
+import 'package:social_media/data/user.dart';
+import 'package:social_media/theme.dart';
 
 import 'login.dart';
 
 class HomePage extends StatelessWidget {
-    var token = StorageUtil.getString("token");
-  @override
-  Widget build(BuildContext context) {
+    final User user;
+    HomePage({this.user});
+
+
+    Future<String> _getUserID ()async{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      var userID = preferences.getString("userID");
+      return userID;
+    }
+
+
+    @override
+    Widget build(BuildContext context){
+    ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+
     return Scaffold(
       //AppBar
       appBar: AppBar(
@@ -20,11 +37,13 @@ class HomePage extends StatelessWidget {
                   child: InkWell(
                     onTap: () => Scaffold.of(context).openDrawer(),
                     child: Container(
-                      decoration: BoxDecoration(
+                      width: 60.0,
+                      height: 60.0,
+                      decoration: new BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/face1.jpeg'),
+                          fit: BoxFit.fitHeight,
+                          image: NetworkImage(user.displayImageURL.replaceAll(RegExp('uploads'),''),),
                         ),
                       ),
                     ),
@@ -34,6 +53,7 @@ class HomePage extends StatelessWidget {
         title: Text('Home'),
       ),
       //MainBody
+
       body: TwitterBody(),
       drawer: Drawer(
         child: Container(
@@ -58,7 +78,7 @@ class HomePage extends StatelessWidget {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
-                          image: AssetImage('assets/images/face1.jpeg'),
+                          image: NetworkImage(user.displayImageURL.replaceAll('uploads/', ''))
                         ),
                       ),
                     ),
@@ -70,7 +90,7 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'carol Danvers',
+                        user.name,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -83,16 +103,16 @@ class HomePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: Text(
-                    '@dan_carol',
+                    '@${user.name.toLowerCase().replaceAll(' ', '_')}',
                     style: TextStyle(
-                        color: Colors.grey,
+                        color: Theme.of(context).disabledColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
                 ),
                 Container(
                   width: double.infinity,
-                  color: Colors.grey,
+                  color: Theme.of(context).disabledColor,
                   height: 0.5,
                 ),
                 Expanded(
@@ -103,58 +123,58 @@ class HomePage extends StatelessWidget {
                         ListTile(
                           title: Text(
                             'Profile',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           leading: Icon(
                             Icons.person,
-                            color: Colors.grey,
+                            color: Theme.of(context).disabledColor,
                           ),
                         ),
                         ListTile(
                           title: Text(
                             'Lists',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           leading: Icon(
                             Icons.list,
-                            color: Colors.grey,
+                            color: Theme.of(context).disabledColor,
                           ),
                         ),
                         ListTile(
                           title: Text(
                             'Bookmarks',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           leading: Icon(
                             Icons.bookmark_border,
-                            color: Colors.grey,
+                            color: Theme.of(context).disabledColor,
                           ),
                         ),
                         ListTile(
                           title: Text(
                             'Moments',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           leading: Icon(
                             Icons.apps,
-                            color: Colors.grey,
+                            color: Theme.of(context).disabledColor,
                           ),
                         ),
                         Container(
                           width: double.infinity,
-                          color: Colors.grey,
+                          color: Theme.of(context).disabledColor,
                           height: 0.5,
                         ),
                         ListTile(
                           title: Text(
                             'Settings and Privacy',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                         ),
                         ListTile(
                           title: Text(
                             'Help center',
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                         ),
                       ],
@@ -163,7 +183,7 @@ class HomePage extends StatelessWidget {
                 ),
                 Container(
                   width: double.infinity,
-                  color: Colors.grey,
+                  color: Theme.of(context).disabledColor,
                   height: 0.5,
                 ),
                 Padding(
@@ -177,10 +197,22 @@ class HomePage extends StatelessWidget {
                         child: IconButton(
                           padding: new EdgeInsets.all(0.0),
                           icon: Icon(
-                            Icons.wb_sunny,
+                            Icons.wb_incandescent,
                             size: 32.0,
                           ),
-                          onPressed: () {},
+                          onPressed: ()=>_themeChanger.setTheme("light"),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.0,
+                        width: 30.0,
+                        child: IconButton(
+                          padding: new EdgeInsets.all(0.0),
+                          icon: Icon(
+                            Icons.lightbulb_outline,
+                            size: 32.0,
+                          ),
+                          onPressed: ()=>_themeChanger.setTheme("dark"),
                         ),
                       ),
                       SizedBox(
@@ -208,6 +240,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).accentColor,
       ),
       //BottomnavBar
+      
       bottomNavigationBar: Container(
         height: 50.0,
         color: Theme.of(context).primaryColorDark,
@@ -216,7 +249,7 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.home),
-              onPressed: () {},
+              onPressed: (){},
             ),
             IconButton(
               icon: Icon(Icons.search),
@@ -224,7 +257,7 @@ class HomePage extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.notifications),
-              onPressed: null,
+              onPressed: null
             ),
             IconButton(
               icon: Icon(Icons.mail),

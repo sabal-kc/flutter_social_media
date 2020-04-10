@@ -165,7 +165,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               });
                             },
                             controller: postController,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).primaryTextTheme.body1,
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
                             maxLength: 160,
@@ -173,9 +173,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             enabled: true,
 
                             decoration: InputDecoration(
-                              helperStyle: TextStyle(color: Colors.white),
+                              helperStyle: Theme.of(context).primaryTextTheme.subtitle,
                               hintText: "What's on your mind?",
-                              hintStyle: TextStyle(color: Colors.white70),
+                              hintStyle: TextStyle(color: Theme.of(context).disabledColor),
                               enabled: true,
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -187,7 +187,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ),
                         ),
-                        _file==null?Container(child: Text ("Still Loading"),):
+                        _file==null?Container():
                             Container(
                               child: SizedBox(
                                 height: 100,

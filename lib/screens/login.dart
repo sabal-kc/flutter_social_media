@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       Map responseBody = response.data;
       String token = responseBody['token'];
-      print(token);
+      //print(token);
       SharedPreferences preferences = await SharedPreferences.getInstance();
       setState(() {
         preferences.setString("token", token);
@@ -115,12 +115,17 @@ class _LoginPageState extends State<LoginPage> {
       response = await dio.get(getSelfUrl);
       print(response.data);
       User user = User.fromJson(response.data);
+
+      setState(() {
+        preferences.setString("userID", user.id);
+      });
+
       String getSelfProfileUrl = Constants.BASE_URL + "profile/me";
       response = await dio.get(getSelfProfileUrl);
       Profile profile = Profile.fromJson(response.data);
 
 
-      Navigator.pushNamed(context, HomePageRoute);
+      Navigator.pushNamed(context, HomePageRoute, arguments:<String, dynamic>{'user':user,'pofile':profile});
 
     }
     //If any error is returned

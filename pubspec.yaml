@@ -29,6 +29,7 @@ dependencies:
   image_picker: ^0.6.4
   dio: any
   modal_progress_hud: ^0.1.3
+  provider: ^2.0.1
 
 dev_dependencies:
   flutter_test:

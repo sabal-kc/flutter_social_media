@@ -12,7 +12,10 @@ import 'package:flutter/services.dart';
 Route<dynamic> generateRoute (RouteSettings settings) {
   switch(settings.name){
     case HomePageRoute:
-      return MaterialPageRoute(builder: (context) => HomePage());
+      Map arguments = settings.arguments;
+      var user = arguments['user'];
+      var profile = arguments ['pofile'];
+      return MaterialPageRoute(builder: (context) => HomePage(user:user));
     case LogInRoute:
       return MaterialPageRoute(builder:(context)=>LoginPage());
     case SignUpRoute:
