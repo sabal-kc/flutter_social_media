@@ -79,6 +79,7 @@ class _TwitterBodyState extends State<TwitterBody> {
     var defaultImageUrl = imageUrl + 'default.jpg';
     return ListView.builder(
       itemCount: snapshotData.length,
+      shrinkWrap: false,
       itemBuilder: (context, index) {
         bool isLiked=false;
         snapshotData[index].likes.forEach((item){

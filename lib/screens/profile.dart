@@ -160,7 +160,7 @@ class ProfilePage extends StatelessWidget {
                             image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image:
-                                    NetworkImage(profile.user.displayImageURL)),
+                                    NetworkImage(profile.user.displayImageURL.replaceAll("uploads", ""))),
                           ),
                         ),
                       ),
@@ -172,10 +172,7 @@ class ProfilePage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   profile.user.name,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  style: Theme.of(context).primaryTextTheme.title
                 ),
               ),
               Padding(
@@ -192,11 +189,19 @@ class ProfilePage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   profile.bio,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style:Theme.of(context).primaryTextTheme.body1,
                 ),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(left: 8.0, top: 24, bottom: 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Theme.of(context).disabledColor,
+                      width: 0.4
+                    )
+                  )
+                ),
                 child: Text(
                   'Recent Posts',
                   style: TextStyle(

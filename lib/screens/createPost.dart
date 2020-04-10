@@ -10,6 +10,9 @@ import 'package:social_media/shared_preference_utils.dart';
 import 'home.dart';
 
 class CreatePostPage extends StatefulWidget {
+
+  final String displayImageUrl;
+  CreatePostPage({this.displayImageUrl});
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
 }
@@ -145,7 +148,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fitHeight,
-                            image: NetworkImage("https://theofficeanalytics.files.wordpress.com/2017/11/dwight.jpeg?w=1200"),
+                            image: NetworkImage(widget.displayImageUrl.replaceAll("uploads", "")),
 
                             ),
                           ),

@@ -22,7 +22,7 @@ Route<dynamic> generateRoute (RouteSettings settings) {
       return MaterialPageRoute(builder:(context)=>SignupPage());
     case CreatePostRoute:
       var arguments = settings.arguments;
-      return MaterialPageRoute(builder: (context)=>CreatePostPage());
+      return MaterialPageRoute(builder: (context)=>CreatePostPage(displayImageUrl: arguments,));
     case ExpandPostRoute:
       Map arguments = settings.arguments;
       return MaterialPageRoute(builder: (context)=>ExpandPostPage(

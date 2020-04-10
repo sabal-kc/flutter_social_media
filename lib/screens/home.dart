@@ -266,7 +266,7 @@ class HomePage extends StatelessWidget {
               ),
 
               floatingActionButton: FloatingActionButton(
-                onPressed: () => Navigator.pushNamed(context, CreatePostRoute),
+                onPressed: () => Navigator.pushNamed(context, CreatePostRoute,arguments: snapshot.data.displayImageURL),
                 child: Icon(Icons.edit),
                 backgroundColor: Theme.of(context).accentColor,
               ),
