@@ -134,28 +134,25 @@ SizedBox submitButton(String title, Color color, Function onClick) {
       ));
 }
 
-TextFormField bioField(String title, TextEditingController controller) {
+Widget bioField(String title, TextEditingController controller,BuildContext context) {
   return TextFormField(
-      controller: controller,
-      keyboardType: TextInputType.multiline,
-      minLines: 3,
-      maxLines: null,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-      style: TextStyle(
-        color: Colors.white,
-      ),
-      decoration: InputDecoration(
-        labelText: title,
-        labelStyle: TextStyle(
-          color: ThemeChanger.darkTheme.accentColor,
+        controller: controller,
+        keyboardType: TextInputType.multiline,
+        minLines: 3,
+        maxLines: null,
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Please enter some text';
+          }
+          return null;
+        },
+        style: Theme.of(context).primaryTextTheme.body1,
+        decoration: InputDecoration(
+          labelText: title,
+          labelStyle: Theme.of(context).primaryTextTheme.body1,
+          hintText: 'Enter ' + title,
+          filled: true,
+          fillColor: Theme.of(context).primaryColorDark,
         ),
-        hintText: 'Enter ' + title,
-        filled: true,
-        fillColor: ThemeChanger.darkTheme.primaryColorDark,
-      ));
+  );
 }

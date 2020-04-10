@@ -139,7 +139,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: bioField("Bio", bioController),
+                    child: bioField("Bio", bioController,context),
                   ),
                 ],
               ),
