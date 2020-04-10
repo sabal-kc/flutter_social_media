@@ -4,37 +4,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
+import 'package:social_media/screens/profile.dart';
 
 class TwitterBody extends StatefulWidget {
+  final Function handler;
+  TwitterBody(this.handler);
   @override
   _TwitterBodyState createState() => _TwitterBodyState();
 }
 
 class _TwitterBodyState extends State<TwitterBody> {
-
   Future<List> futureTweets;
-  var token;
-
-
+  
   @override
   void initState() {
     super.initState();
-  }
-
-  // ignore: missing_return
-  Future<List> getPosts(token) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    var token = preferences.getString("token");
-    var dio = new Dio();
-    String url = Constants.BASE_URL + "posts/";
-
-    try {
-      Response response = await dio.get(url,
-          options: Options(headers: {"x-auth-token": token}));
-      return Tweet.ListfromJson(response.data);
-    } catch (error) {
-      print("Error$error");
-    }
+    futureTweets = widget.handler();
   }
 
   void likePostClick(var postId) async {
@@ -60,6 +45,10 @@ class _TwitterBodyState extends State<TwitterBody> {
       itemBuilder: (context, index) => InkWell(
         onTap: () => Navigator.pushNamed(context, ExpandPostRoute,
             arguments: snapshotData[index].id),
+        // onTap: () => Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => ProfilePage(snapshotData[index].id))),
         child: Column(
           children: <Widget>[
             Row(
@@ -276,7 +265,7 @@ class _TwitterBodyState extends State<TwitterBody> {
 
   @override
   Widget build(BuildContext context) {
-    futureTweets = getPosts(token);
+  
     return Container(
       color: Theme.of(context).primaryColor,
       child: RefreshIndicator(

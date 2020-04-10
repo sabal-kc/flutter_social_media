@@ -1,7 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
 import 'package:social_media/screens/createPost.dart';
 import 'package:social_media/screens/home_body.dart';
@@ -10,12 +14,12 @@ import 'package:social_media/shared_preference_utils.dart';
 import 'package:social_media/data/user.dart';
 import 'package:social_media/theme.dart';
 
+import '../constants.dart';
 import 'login.dart';
 
 class HomePage extends StatelessWidget {
     final User user;
     HomePage({this.user});
-
 
     Future<String> _getUserID ()async{
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -23,10 +27,10 @@ class HomePage extends StatelessWidget {
       return userID;
     }
 
-
-    @override
-    Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     ThemeChanger _themeChanger = Provider.of<ThemeChanger>(context);
+    var token = StorageUtil.getString("token");
 
     return Scaffold(
       //AppBar
@@ -54,7 +58,7 @@ class HomePage extends StatelessWidget {
       ),
       //MainBody
 
-      body: TwitterBody(),
+      body: TwitterBody(getPostsHandler),
       drawer: Drawer(
         child: Container(
             color: Theme.of(context).primaryColor,
@@ -69,7 +73,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ProfilePage()));
+                              builder: (context) => ProfilePage("")));
                     },
                     child: Container(
                       width: 75.0,
@@ -235,7 +239,7 @@ class HomePage extends StatelessWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>Navigator.pushNamed(context, CreatePostRoute),
+        onPressed: () => Navigator.pushNamed(context, CreatePostRoute),
         child: Icon(Icons.edit),
         backgroundColor: Theme.of(context).accentColor,
       ),
@@ -267,5 +271,21 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // ignore: missing_return
+  Future<List> getPostsHandler() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString("token");
+    var dio = new Dio();
+    String url = Constants.BASE_URL + "posts/";
+
+    try {
+      Response response = await dio.get(url,
+          options: Options(headers: {"x-auth-token": token}));
+      return Tweet.ListfromJson(response.data);
+    } catch (error) {
+      print("Error$error");
+    }
   }
 }
