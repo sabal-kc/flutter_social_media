@@ -232,7 +232,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
           base64Image = base64Encode(snapshot.data.readAsBytesSync());
 
           return Container(
-            color: Theme.of(context).primaryColor,
+            //color: Theme.of(context).primaryColor,
             height: coverImageHeight,
             width: double.infinity,
             decoration: BoxDecoration(
