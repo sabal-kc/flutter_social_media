@@ -21,7 +21,7 @@ class ThemeChanger with ChangeNotifier {
 
   static ThemeData lightTheme = ThemeData(
       primaryColor: Colors.white,
-      primaryColorDark:Colors.white,
+      primaryColorDark:Colors.white70,
       disabledColor: Colors.black54,
 
       primaryTextTheme: TextTheme(

@@ -210,6 +210,7 @@ class HomePage extends StatelessWidget {
                                         .body1,
                                   ),
                                 ),
+
                               ],
                             ),
                           ),
@@ -219,6 +220,53 @@ class HomePage extends StatelessWidget {
                           color: Theme.of(context).disabledColor,
                           height: 0.5,
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 30.0,
+                                width: 30.0,
+                                child: IconButton(
+                                  padding: new EdgeInsets.all(0.0),
+                                  icon: Icon(
+                                    Icons.wb_incandescent,
+                                    size: 32.0,
+                                  ),
+                                  onPressed: () =>
+                                      _themeChanger.setTheme("light"),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30.0,
+                                width: 30.0,
+                                child: IconButton(
+                                  padding: new EdgeInsets.all(0.0),
+                                  icon: Icon(
+                                    Icons.lightbulb_outline,
+                                    size: 32.0,
+                                  ),
+                                  onPressed: () =>
+                                      _themeChanger.setTheme("dark"),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30.0,
+                                width: 30.0,
+                                child: IconButton(
+                                  padding: new EdgeInsets.all(0.0),
+                                  icon: Icon(
+                                    Icons.camera_alt,
+                                    size: 32.0,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+
                       ],
                     )),
               ),
