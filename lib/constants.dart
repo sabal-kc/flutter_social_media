@@ -1,6 +1,7 @@
 class Constants {
-  static const String BASE_URL = "http://192.168.1.16:5000/api/";
-  static const String IMAGE_URL = "http://192.168.1.16:5000/";
+  static const String BASE = "https://social-backend-app.herokuapp.com";
+  static const String BASE_URL = BASE + "/api/";
+  static const String IMAGE_URL = BASE;
 
   //ROUTES
 
