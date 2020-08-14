@@ -1,16 +1,10 @@
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media/data/profile.dart';
-import 'package:social_media/data/user.dart';
 import 'package:social_media/screens/form.dart';
-import 'package:social_media/screens/home.dart';
-import 'package:social_media/screens/signup.dart';
-import 'package:social_media/shared_preference_utils.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/routes.dart';
 
@@ -21,6 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+ 
+ //States
   bool obscurePassword = false;
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -28,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _autovalidate = false;
   bool _isInAsyncCall = false;
   final globalKey = GlobalKey<ScaffoldState>();
+
 
   @override
   void initState() {

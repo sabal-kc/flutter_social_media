@@ -10,11 +10,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/data/profile.dart';
 import 'package:social_media/data/user.dart';
-import 'package:social_media/screens/dummy_page.dart';
-import 'package:social_media/screens/profile.dart';
-
 import 'form.dart';
-import 'home.dart';
+
 
 class CreateEditProfile extends StatefulWidget {
   final User user;

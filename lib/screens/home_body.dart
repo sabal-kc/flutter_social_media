@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
-import 'package:social_media/screens/profile.dart';
 
 class TwitterBody extends StatefulWidget {
 
   final String url;
   final String userID;
+
   TwitterBody(this.url, this.userID);
 
   @override
@@ -22,6 +22,7 @@ class _TwitterBodyState extends State<TwitterBody> {
   @override
   void initState() {
     super.initState();
+
   }
 
   void likePostClick(var postId,bool isLiked) async {
@@ -55,6 +56,7 @@ class _TwitterBodyState extends State<TwitterBody> {
       }
     }
   }
+
 
   Future<List> _getData() async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -310,6 +312,8 @@ class _TwitterBodyState extends State<TwitterBody> {
 
   @override
   Widget build(BuildContext context) {
+    
+    
     return Container(
       color: Theme.of(context).primaryColor,
       child: RefreshIndicator(

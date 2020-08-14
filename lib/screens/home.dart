@@ -12,10 +12,10 @@ import 'package:social_media/theme.dart';
 import '../constants.dart';
 
 class HomePage extends StatelessWidget {
+
   Future<User> getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString("token");
-//    print(token);
     var dio = Dio();
     var url = Constants.BASE_URL + "auth/";
     Response response =
