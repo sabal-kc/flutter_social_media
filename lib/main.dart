@@ -12,19 +12,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ThemeChanger>(
-      builder: (_)=>ThemeChanger("dark"),
-      child:new MaterialAppWithTheme(),
+      builder: (_) => ThemeChanger("dark"),
+      child: new MaterialAppWithTheme(),
     );
   }
 }
 
 class MaterialAppWithTheme extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-
-  final theme = Provider.of<ThemeChanger>(context);
-
+    final theme = Provider.of<ThemeChanger>(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

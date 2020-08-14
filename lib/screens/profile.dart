@@ -13,8 +13,9 @@ class ProfilePage extends StatelessWidget {
   final String userId;
   bool _isMyProfile = false;
   Profile profile;
+  bool showAppBar;
 
-  ProfilePage(this.userId);
+  ProfilePage(this.userId, {this.showAppBar = true});
 
   Future<Profile> getData() async {
     print("from profile:$userId");
@@ -46,9 +47,11 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Profile'),
-        ),
+        appBar: this.showAppBar == true
+            ? AppBar(
+                title: Text('Profile'),
+              )
+            : null,
         body: FutureBuilder<Profile>(
             future: getData(),
             builder: (context, AsyncSnapshot<Profile> snapshot) {
