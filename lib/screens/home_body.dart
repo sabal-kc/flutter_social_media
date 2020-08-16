@@ -75,7 +75,8 @@ class _TwitterBodyState extends State<TwitterBody> {
     var defaultImageUrl = imageUrl + 'default.jpg';
     return ListView.builder(
         itemCount: snapshotData.length,
-        shrinkWrap: false,
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           bool isLiked = false;
           snapshotData[index].likes.forEach((item) {
@@ -322,7 +323,7 @@ class _TwitterBodyState extends State<TwitterBody> {
   @override
   Widget build(BuildContext context) {
     
-    
+
     return Container(
       color: Theme.of(context).primaryColor,
       child: RefreshIndicator(

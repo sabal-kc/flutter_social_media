@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/data/profile.dart';
@@ -52,33 +53,43 @@ class ProfilePage extends StatelessWidget {
                 title: Text('Profile'),
               )
             : null,
-        body: FutureBuilder<Profile>(
-            future: getData(),
-            builder: (context, AsyncSnapshot<Profile> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Column(
-                  children: <Widget>[
-                    upperProfileArea(
-                        Theme.of(context).primaryColor, snapshot.data, context),
-                    Expanded(
-                        child: FutureBuilder(
-                            future: getPostsHandler(),
-                            builder: (context, snapshot1) {
-                              if (snapshot1.hasData)
-                                return TwitterBody(
-                                    snapshot1.data, snapshot.data.user.id);
-                              else
-                                return Container();
-                            })),
-                  ],
-                );
-              }
-              return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Theme.of(context).primaryColor,
-                  child: Center(child: CircularProgressIndicator()));
-            }));
+        body: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor
+          ),
+          child: FutureBuilder<Profile>(
+              future: getData(),
+              builder: (context, AsyncSnapshot<Profile> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return ListView(
+                    scrollDirection: Axis.vertical,
+                    children: <Widget>[
+                      upperProfileArea(
+                          Theme.of(context).primaryColor, snapshot.data, context),
+                      FutureBuilder(
+                          future: getPostsHandler(),
+                          builder: (context, snapshot1) {
+                            if (snapshot1.hasData)
+                              return TwitterBody(
+                                  snapshot1.data, snapshot.data.user.id
+                              );
+
+
+                            else
+                              return Container(
+                                height:1000
+                              );
+                          }),
+                    ],
+                  );
+                }
+                return Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Theme.of(context).primaryColor,
+                    child: Center(child: CircularProgressIndicator()));
+              }),
+        ));
   }
 
   // ignore: missing_return
