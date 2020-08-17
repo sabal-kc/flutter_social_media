@@ -5,15 +5,23 @@ import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
 import 'package:dio/dio.dart';
+import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/profile.dart';
 import 'package:social_media/theme.dart';
 
 class ExpandPostPage extends StatefulWidget {
   final String postID;
   final bool isLiked;
+  final bool isDeletable;
   final String userID;
+  final String mainUserID;
 
-  ExpandPostPage({this.postID, this.isLiked,this.userID});
+  ExpandPostPage(
+      {this.postID,
+      this.isLiked,
+      this.userID,
+      this.isDeletable,
+      this.mainUserID});
 
   @override
   _ExpandPostPageState createState() => _ExpandPostPageState();
@@ -26,10 +34,68 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
   bool _isInAsyncCall = false;
   bool _isLiked = false;
 
-  void initState(){
+  void initState() {
     super.initState();
     _isLiked = widget.isLiked;
   }
+
+  Widget deletePostIcon(Function deleteHandler) {
+    // print(id);
+    if (widget.isDeletable)
+      return IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () {
+          showAlertDialog(context, deleteHandler);
+        },
+      );
+    return Container();
+  }
+
+  showAlertDialog(BuildContext context, Function deleteHandler) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text(
+        "Delete",
+        style: TextStyle(color: Colors.red),
+      ),
+      onPressed: () {
+        deleteHandler();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Theme.of(context).primaryColor,
+      title: Text("Confirm delete"),
+      content: Text(
+        "Are you sure you want to delete the post?",
+        style: Theme.of(context).primaryTextTheme.body1,
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalProgressHUD(
+            inAsyncCall: _isInAsyncCall,
+            opacity: 0.5,
+            progressIndicator: CircularProgressIndicator(),
+            child: alert);
+      },
+    );
+  }
+
   // ignore: missing_return
   Future<Tweet> getPost() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -64,12 +130,11 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProfilePage(widget.userID))
-                  );
+                          builder: (context) => ProfilePage(widget.userID)));
                 },
                 child: Container(
                   width: 60.0,
@@ -119,8 +184,9 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     Widget timeDateSection = Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          border:
-              Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
+          border: Border(
+              bottom: BorderSide(
+                  width: 0.3, color: Theme.of(context).disabledColor))),
       child: Row(
         children: <Widget>[
           Text(
@@ -149,11 +215,11 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     //************************POSTINFO SECTION***************************************
     //***************************************************************************
 
-
     Widget postInfoSection(List likes, List comments) => Container(
         decoration: BoxDecoration(
-            border:
-                Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
+            border: Border(
+                bottom: BorderSide(
+                    width: 0.3, color: Theme.of(context).disabledColor))),
         padding: EdgeInsets.all(10),
         child: Row(
           children: <Widget>[
@@ -161,7 +227,8 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
               "${comments.length}",
               style: Theme.of(context).primaryTextTheme.body1,
             ),
-            Text(" Comments", style:TextStyle(color:Theme.of(context).disabledColor)),
+            Text(" Comments",
+                style: TextStyle(color: Theme.of(context).disabledColor)),
             SizedBox(
               width: 15,
             ),
@@ -169,31 +236,29 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
               "${likes.length}",
               style: Theme.of(context).primaryTextTheme.body1,
             ),
-            Text(" Likes", style: TextStyle(color: Theme.of(context).disabledColor))
+            Text(" Likes",
+                style: TextStyle(color: Theme.of(context).disabledColor))
           ],
         ));
 
-
-
     //************************ICON SECTION***************************************
 
-    void likePostClick(var postId,bool isLiked) async {
+    void likePostClick(var postId, bool isLiked) async {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       var token = preferences.getString("token");
       String url;
       if (!isLiked)
         url = Constants.BASE_URL + "posts/like/" + postId;
       else
-        url =  Constants.BASE_URL + "posts/unlike/" + postId;
+        url = Constants.BASE_URL + "posts/unlike/" + postId;
       var dio = new Dio();
       try {
         Response response = await dio.put(url,
             options: Options(headers: {"x-auth-token": token}));
         setState(() {
-          _isLiked=!_isLiked;
+          _isLiked = !_isLiked;
         });
-      }
-      catch (e) {
+      } catch (e) {
         var errors;
         if (e.response != null) {
           print(e.response.data);
@@ -214,74 +279,131 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     Widget iconSection = Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       decoration: BoxDecoration(
-          border:
-              Border(bottom: BorderSide(width: 0.3, color:Theme.of(context).disabledColor))),
+          border: Border(
+              bottom: BorderSide(
+                  width: 0.3, color: Theme.of(context).disabledColor))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          IconButton(icon:Icon(Icons.comment),onPressed: (){},),
           IconButton(
-            icon:_isLiked?Icon(Icons.favorite):Icon(Icons.favorite_border),
-            onPressed: ()=>likePostClick(widget.postID,_isLiked),
+            icon: Icon(Icons.comment),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: _isLiked ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+            onPressed: () => likePostClick(widget.postID, _isLiked),
           ),
           Transform.rotate(
-              angle:22/14,
-              child: IconButton(icon:Icon(Icons.repeat),onPressed: (){},)),
-          IconButton(icon:Icon(Icons.share),onPressed: (){},),
+              angle: 22 / 14,
+              child: IconButton(
+                icon: Icon(Icons.repeat),
+                onPressed: () {},
+              )),
+          deletePostIcon(() async {
+            Navigator.of(context).pop();
+            setState(() {
+              _isInAsyncCall = true;
+            });
+            String url = Constants.BASE_URL + "posts/" + widget.postID;
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            var token = preferences.getString("token");
+            var dio = Dio();
+            dio.options.connectTimeout = 10000;
+            dio.options.receiveTimeout = 5000;
+            //If successful post
+            try {
+              Response<Map> response = await dio.delete(url,
+                  options: Options(headers: {"x-auth-token": token}));
+              Map responseBody = response.data;
+              setState(() {
+                // stop the modal progress HUD
+                _isInAsyncCall = false;
+              });
+
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }
+            //If any error is returned
+            on DioError catch (e) {
+              var errors;
+              if (e.response != null) {
+                print(e.response.data);
+                errors = e.response.data;
+                // print(e.response.headers);
+                // print(e.response.request);
+              } else {
+                // Something happened in setting up or sending the request that triggered an Error
+                errors = {
+                  "errors": [
+                    {"msg": "Server error"}
+                  ]
+                };
+                print(e.request);
+                print(e.message);
+              }
+            }
+          }),
         ],
       ),
     );
-
 
     //***************************************************************************
     //************************POST SECTION***************************************
     //***************************************************************************
 
-
     Widget postSection(String text) => Text(text,
-        style:Theme.of(context).primaryTextTheme.body1.merge(TextStyle(
-          fontSize: 18.0,
-          height: 1.5,
-        )));
+        style: Theme.of(context).primaryTextTheme.body1.merge(TextStyle(
+              fontSize: 18.0,
+              height: 1.5,
+            )));
 
     //***************************************************************************
     //************************IMAGE SECTION***************************************
     //***************************************************************************
 
-    Widget imageSection (String imageUrl){
-      var url = Constants.IMAGE_URL+imageUrl.replaceAll("uploads", "");
+    Widget imageSection(String imageUrl) {
+      var url = Constants.IMAGE_URL + imageUrl.replaceAll("uploads", "");
       return Container(
-        padding: EdgeInsets.all(10),
-        child:SizedBox(
-          height: 250,
-          width:200,
-          child: Image(
-            image: NetworkImage(url)
-          ),
-        )
-
-        );
-
+          padding: EdgeInsets.all(10),
+          child: SizedBox(
+            height: 250,
+            width: 200,
+            child: Image(image: NetworkImage(url)),
+          ));
     }
-
-
 
     //***************************************************************************
     //************************COMMENTS SECTION***************************************
     //***************************************************************************
 
-
+    Widget deleteCommentIcon(String id, Function deleteHandler) {
+      if (widget.mainUserID == id)
+        return InkWell(
+          child: Icon(Icons.delete),
+          onTap: () {
+            showAlertDialog(context, deleteHandler);
+          },
+        );
+      return Container();
+    }
 
     List<Widget> commentSection(List comments, String name) {
       List<Widget> commentWidgets = [];
       var defaultImageUrl = Constants.IMAGE_URL + 'default.jpg';
 
       for (int i = 0; i < comments.length; i++) {
+        // print(widget.userID);
+        // print(comments[i]);
         commentWidgets.add(Container(
             decoration: BoxDecoration(
                 border: Border(
-                    bottom: BorderSide(width: 0.3, color: Theme.of(context).disabledColor))),
+                    bottom: BorderSide(
+                        width: 0.3, color: Theme.of(context).disabledColor))),
             padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -298,7 +420,9 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
-                          image: NetworkImage(Constants.IMAGE_URL + comments[i]['displayImage'].replaceAll("uploads","")),
+                          image: NetworkImage(Constants.IMAGE_URL +
+                              comments[i]['displayImage']
+                                  .replaceAll("uploads", "")),
                         ),
                       ),
                     ),
@@ -311,24 +435,77 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(comments[i]["name"],
-                            style: Theme.of(context).primaryTextTheme.body1,),
-                        Text("Replying to @${name.replaceAll(" ", "_").toLowerCase()}",
-                            style: TextStyle(color: Theme.of(context).disabledColor)),
+                        Text(
+                          comments[i]["name"],
+                          style: Theme.of(context).primaryTextTheme.body1,
+                        ),
+                        Text(
+                            "Replying to @${name.replaceAll(" ", "_").toLowerCase()}",
+                            style: TextStyle(
+                                color: Theme.of(context).disabledColor)),
                         SizedBox(height: 8),
                         Text(comments[i]["text"],
-                            style:Theme.of(context).primaryTextTheme.body1.merge(
-                                TextStyle(fontSize: 15,
-                                    height: 1.5,))),
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .body1
+                                .merge(TextStyle(
+                                  fontSize: 15,
+                                  height: 1.5,
+                                ))),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Icon(Icons.favorite_border),
                               SizedBox(width: 40),
-                              Icon(Icons.share, size: 20),
+                              deleteCommentIcon(comments[i]["user"], () async {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  _isInAsyncCall = true;
+                                });
+                                String url = Constants.BASE_URL +
+                                    "posts/comment/" +
+                                    widget.postID +
+                                    "/" +
+                                    comments[i]["_id"];
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                var token = preferences.getString("token");
+                                var dio = Dio();
+                                dio.options.connectTimeout = 10000;
+                                dio.options.receiveTimeout = 5000;
+                                //If successful post
+                                try {
+                                  await dio.delete(url,
+                                      options: Options(
+                                          headers: {"x-auth-token": token}));
+                                  setState(() {
+                                    // stop the modal progress HUD
+                                    _isInAsyncCall = false;
+                                  });
+                                }
+                                //If any error is returned
+                                on DioError catch (e) {
+                                  var errors;
+                                  if (e.response != null) {
+                                    print(e.response.data);
+                                    errors = e.response.data;
+                                    // print(e.response.headers);
+                                    // print(e.response.request);
+                                  } else {
+                                    // Something happened in setting up or sending the request that triggered an Error
+                                    errors = {
+                                      "errors": [
+                                        {"msg": "Server error"}
+                                      ]
+                                    };
+                                    print(e.request);
+                                    print(e.message);
+                                  }
+                                }
+                              }),
                               SizedBox(width: 40),
                               Text("Report",
                                   style: TextStyle(color: Colors.blue))
@@ -348,7 +525,6 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
     //***************************************************************************
     //************************HANDLER SECTION***************************************
     //***************************************************************************
-
 
     void addCommentClickHandler() async {
       setState(() {
@@ -410,16 +586,8 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
       }
     }
 
-
-
-
-
-
-
-    Future<void> _refreshPage()async{
-      setState(() {
-
-      });
+    Future<void> _refreshPage() async {
+      setState(() {});
     }
 
     //***************************************************************************
@@ -455,40 +623,39 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
           progressIndicator: CircularProgressIndicator(),
           child: Container(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Stack(
-                children: [
-                  FutureBuilder(
-                      future: futureTweet,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView(
-                            children: <Widget>[
-                              nameSection(snapshot.data.name,
-                                  snapshot.data.displayImage, snapshot.data.user),
-                              postSection(snapshot.data.text),
-                              snapshot.data.image==null?Container():
-                              imageSection(snapshot.data.image),
-                              timeDateSection,
-                              postInfoSection(
-                                  snapshot.data.likes, snapshot.data.comments),
-                              iconSection,
-                              Column(
-                                children: commentSection(snapshot.data.comments,snapshot.data.name),
-                              ),
-                              SizedBox(height: 70,)
-
-                            ],
-                          );
-                        } else if (snapshot.hasError)
-                          return Text("Error");
-                        else
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                      }),
-
-
-
+            child: Stack(children: [
+              FutureBuilder(
+                  future: futureTweet,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView(
+                        children: <Widget>[
+                          nameSection(snapshot.data.name,
+                              snapshot.data.displayImage, snapshot.data.user),
+                          postSection(snapshot.data.text),
+                          snapshot.data.image == null
+                              ? Container()
+                              : imageSection(snapshot.data.image),
+                          timeDateSection,
+                          postInfoSection(
+                              snapshot.data.likes, snapshot.data.comments),
+                          iconSection,
+                          Column(
+                            children: commentSection(
+                                snapshot.data.comments, snapshot.data.name),
+                          ),
+                          SizedBox(
+                            height: 70,
+                          )
+                        ],
+                      );
+                    } else if (snapshot.hasError)
+                      return Text("Error");
+                    else
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                  }),
               Positioned(
                   left: 10,
                   right: 0,

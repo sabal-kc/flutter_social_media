@@ -73,12 +73,17 @@ class _TwitterBodyState extends State<TwitterBody> {
   Widget getList(snapshotData) {
     var imageUrl = Constants.BASE_URL.replaceAll(RegExp('api'), '');
     var defaultImageUrl = imageUrl + 'default.jpg';
+    // print("Test");
+    // print(snapshotData[0].user);
+    // print(widget.userID);
     return ListView.builder(
         itemCount: snapshotData.length,
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
           bool isLiked = false;
+          bool isDeletable = snapshotData[index].user == widget.userID;
+          // print("isDeletable " + isDeletable.toString());
           snapshotData[index].likes.forEach((item) {
             if (item["user"] == widget.userID) isLiked = true;
           });
@@ -87,7 +92,9 @@ class _TwitterBodyState extends State<TwitterBody> {
                 Navigator.pushNamed(context, ExpandPostRoute, arguments: {
               'id': snapshotData[index].id,
               'isLiked': isLiked,
-              'userID': snapshotData[index].user
+              'userID': snapshotData[index].user,
+              'isDeletable': isDeletable,
+              'mainUserID': widget.userID
             }),
             child: Column(
               children: <Widget>[
@@ -147,10 +154,7 @@ class _TwitterBodyState extends State<TwitterBody> {
                                     ),
                                   ],
                                 ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Theme.of(context).disabledColor,
-                                )
+                                // deleteIcon(snapshotData[index].user),
                               ],
                             ),
                             Padding(
@@ -263,7 +267,7 @@ class _TwitterBodyState extends State<TwitterBody> {
                                                 Theme.of(context).disabledColor,
                                           ),
                                           onPressed: () => likePostClick(
-                                              snapshotData[index].id, isLiked),
+                                              snapshotData[index], isLiked),
                                         ),
                                       ),
                                       SizedBox(
@@ -343,6 +347,15 @@ class _TwitterBodyState extends State<TwitterBody> {
             }),
       ),
     );
+  }
+
+  Widget deleteIcon(String id) {
+    // print(id);
+    if (id == widget.userID)
+      return Icon(
+        Icons.delete,
+      );
+    return Container();
   }
 
   @override
