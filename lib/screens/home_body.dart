@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
 import 'package:social_media/routes.dart';
+import 'dart:async';
 
 class TwitterBody extends StatefulWidget {
   final String url;
@@ -17,9 +18,15 @@ class TwitterBody extends StatefulWidget {
 
 class _TwitterBodyState extends State<TwitterBody> {
   //Future<List> futureTweets;
+  Timer _everySecond;
 
   @override
   void initState() {
+    _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        
+      });
+    });
     super.initState();
 
   }
