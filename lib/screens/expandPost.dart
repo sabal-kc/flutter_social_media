@@ -3,11 +3,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media/constants.dart';
 import 'package:social_media/model/Post.dart';
-import 'package:social_media/routes.dart';
 import 'package:dio/dio.dart';
 import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/profile.dart';
-import 'package:social_media/theme.dart';
 
 class ExpandPostPage extends StatefulWidget {
   final String postID;
