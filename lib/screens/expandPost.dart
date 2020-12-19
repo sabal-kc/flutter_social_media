@@ -6,6 +6,8 @@ import 'package:social_media/model/Post.dart';
 import 'package:dio/dio.dart';
 import 'package:social_media/screens/home.dart';
 import 'package:social_media/screens/profile.dart';
+import 'package:social_media/theme.dart';
+import 'dart:async';
 
 class ExpandPostPage extends StatefulWidget {
   final String postID;
@@ -31,10 +33,15 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
   TextEditingController commentController = TextEditingController();
   bool _isInAsyncCall = false;
   bool _isLiked = false;
+  Timer _everySecond;
 
   void initState() {
     super.initState();
     _isLiked = widget.isLiked;
+
+    _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {});
+    });
   }
 
   Widget deletePostIcon(Function deleteHandler) {
