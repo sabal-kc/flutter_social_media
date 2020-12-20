@@ -18,17 +18,10 @@ class TwitterBody extends StatefulWidget {
 
 class _TwitterBodyState extends State<TwitterBody> {
   //Future<List> futureTweets;
-  Timer _everySecond;
 
   @override
   void initState() {
-    _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      setState(() {
-        
-      });
-    });
     super.initState();
-
   }
 
   void likePostClick(var postId, bool isLiked) async {
@@ -36,9 +29,9 @@ class _TwitterBodyState extends State<TwitterBody> {
     var token = preferences.getString("token");
     String url;
     if (!isLiked)
-      url = Constants.BASE_URL + "posts/like/" + postId;
+      url = Constants.BASE_URL + "posts/like/" + postId.id;
     else
-      url = Constants.BASE_URL + "posts/unlike/" + postId;
+      url = Constants.BASE_URL + "posts/unlike/" + postId.id;
     var dio = new Dio();
     try {
       Response response = await dio.put(url,
@@ -333,25 +326,30 @@ class _TwitterBodyState extends State<TwitterBody> {
 
   @override
   Widget build(BuildContext context) {
-    
-
-    return Container(
-      color: Theme.of(context).primaryColor,
-      child: RefreshIndicator(
-        // ignore: missing_return
-        onRefresh: _refreshPost,
-        child: FutureBuilder(
-            future: _getData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return getList(snapshot.data);
-              } else if (snapshot.hasError)
-                return Text("Error");
-              else
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-            }),
+    return RawKeyboardListener(
+      focusNode: FocusNode(),
+      autofocus: true,
+      onKey: (RawKeyEvent event) {
+        setState(() {});
+      },
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        child: RefreshIndicator(
+          // ignore: missing_return
+          onRefresh: _refreshPost,
+          child: FutureBuilder(
+              future: _getData(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return getList(snapshot.data);
+                } else if (snapshot.hasError)
+                  return Text("Error");
+                else
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+              }),
+        ),
       ),
     );
   }

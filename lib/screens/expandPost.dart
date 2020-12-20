@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,15 +35,15 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
   TextEditingController commentController = TextEditingController();
   bool _isInAsyncCall = false;
   bool _isLiked = false;
-  Timer _everySecond;
 
   void initState() {
     super.initState();
     _isLiked = widget.isLiked;
+  }
 
-    _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      setState(() {});
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget deletePostIcon(Function deleteHandler) {
@@ -626,70 +628,77 @@ class _ExpandPostPageState extends State<ExpandPostPage> {
           inAsyncCall: _isInAsyncCall,
           opacity: 0.5,
           progressIndicator: CircularProgressIndicator(),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Stack(children: [
-              FutureBuilder(
-                  future: futureTweet,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView(
-                        children: <Widget>[
-                          nameSection(snapshot.data.name,
-                              snapshot.data.displayImage, snapshot.data.user),
-                          postSection(snapshot.data.text),
-                          snapshot.data.image == null
-                              ? Container()
-                              : imageSection(snapshot.data.image),
-                          timeDateSection,
-                          postInfoSection(
-                              snapshot.data.likes, snapshot.data.comments),
-                          iconSection,
-                          Column(
-                            children: commentSection(
-                                snapshot.data.comments, snapshot.data.name),
-                          ),
-                          SizedBox(
-                            height: 70,
-                          )
-                        ],
-                      );
-                    } else if (snapshot.hasError)
-                      return Text("Error");
-                    else
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                  }),
-              Positioned(
-                  left: 10,
-                  right: 0,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: TextFormField(
-                      onChanged: (value) {
-                        setState(() {
-                          tempComment = value;
-                        });
-                      },
-                      controller: commentController,
-                      maxLines: null,
-                      maxLength: 160,
-                      keyboardType: TextInputType.multiline,
-                      style: Theme.of(context).primaryTextTheme.body1,
-                      enabled: true,
-                      decoration: InputDecoration(
-                          enabled: true,
-                          hintText: "Add Your Comment",
-                          hintStyle: Theme.of(context).primaryTextTheme.body1,
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white))),
-                    ),
-                  ))
-            ]),
+          child: RawKeyboardListener(
+            focusNode: FocusNode(),
+            autofocus: true,
+            onKey: (RawKeyEvent event) {
+              setState(() {});
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Stack(children: [
+                FutureBuilder(
+                    future: futureTweet,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView(
+                          children: <Widget>[
+                            nameSection(snapshot.data.name,
+                                snapshot.data.displayImage, snapshot.data.user),
+                            postSection(snapshot.data.text),
+                            snapshot.data.image == null
+                                ? Container()
+                                : imageSection(snapshot.data.image),
+                            timeDateSection,
+                            postInfoSection(
+                                snapshot.data.likes, snapshot.data.comments),
+                            iconSection,
+                            Column(
+                              children: commentSection(
+                                  snapshot.data.comments, snapshot.data.name),
+                            ),
+                            SizedBox(
+                              height: 70,
+                            )
+                          ],
+                        );
+                      } else if (snapshot.hasError)
+                        return Text("Error");
+                      else
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                    }),
+                Positioned(
+                    left: 10,
+                    right: 0,
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            tempComment = value;
+                          });
+                        },
+                        controller: commentController,
+                        maxLines: null,
+                        maxLength: 160,
+                        keyboardType: TextInputType.multiline,
+                        style: Theme.of(context).primaryTextTheme.body1,
+                        enabled: true,
+                        decoration: InputDecoration(
+                            enabled: true,
+                            hintText: "Add Your Comment",
+                            hintStyle: Theme.of(context).primaryTextTheme.body1,
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white))),
+                      ),
+                    ))
+              ]),
+            ),
           ),
         ),
       ),
